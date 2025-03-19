@@ -1,4 +1,4 @@
-import DefaultLayout from "./components/defaultLayout";
+import DefaultLayout from "./components/layout/defaultLayout";
 
 export default function RootPage(){
 

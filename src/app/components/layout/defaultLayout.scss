@@ -1,0 +1,42 @@
+.layout-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  .header {
+    z-index: 1201;
+  }
+  
+  .content-wrapper {
+    display: flex;
+    flex: 1;
+    margin-top: 64px;
+  }
+  
+  .desktop-drawer .MuiDrawer-paper {
+    width: 240px;
+    box-sizing: border-box;
+    margin-top: 64px;
+  }
+  
+  .mobile-drawer .MuiDrawer-paper {
+    width: 240px;
+  }
+  
+  .main-content {
+    flex-grow: 1;
+    padding: 24px;
+    margin-left: 240px;
+    overflow: auto;
+  }
+  
+  .footer {
+    padding: 16px;
+    text-align: center;
+    background-color: #eeeeee;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+  
