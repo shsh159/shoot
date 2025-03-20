@@ -1,9 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { TextField, Button, Container, Typography, Box } from "@mui/material";
+import { TextField, Button, Typography, Box, Modal, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import styles from "./page.module.scss";
 
-export default function AddExpense() {
+interface AddExpenseModalProps {
+  open: boolean;
+  handleClose: () => void;
+}
+
+export default function AddExpenseModal({ open, handleClose }: AddExpenseModalProps) {
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
 
@@ -11,15 +18,18 @@ export default function AddExpense() {
     event.preventDefault();
     console.log("출금 내역:", { amount, description });
 
-    // TODO: 출금 내역을 상태 관리
     setAmount("");
     setDescription("");
+    handleClose();
   };
 
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2 }}>
-        <Typography variant="h5" gutterBottom>
+    <Modal open={open} onClose={handleClose} aria-labelledby="add-expense-modal">
+      <Box className={styles.modalContainer}>
+        <IconButton className={styles.closeButton} onClick={handleClose}>
+          <CloseIcon />
+        </IconButton>
+        <Typography id="add-expense-modal" variant="h5" gutterBottom>
           출금 내역 추가
         </Typography>
         <form onSubmit={handleSubmit}>
@@ -45,6 +55,6 @@ export default function AddExpense() {
           </Button>
         </form>
       </Box>
-    </Container>
+    </Modal>
   );
 }

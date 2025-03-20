@@ -1,10 +1,11 @@
+import { Typography } from "@mui/material";
 import DefaultLayout from "./components/layout/defaultLayout";
 
 export default function RootPage(){
 
     return(
         <DefaultLayout>
-            <div>test</div>
+            <Typography variant="h2">돈관리 잘하자!!</Typography>
         </DefaultLayout>
     )
 }
