@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import HistoryGrid from "../components/historyGrid";
 import DefaultLayout from "../components/layout/defaultLayout";
 import AddIncomeModal from "../income/page";
 import AddExpenseModal from "../expense/page";
+import styles from "./page.module.scss";
 
 export default function List() {
   const [incomeOpen, setIncomeOpen] = useState(false);
@@ -13,13 +14,19 @@ export default function List() {
 
   return (
     <DefaultLayout>
-      <Button type="button" onClick={() => setIncomeOpen(true)}>
-        입금
-      </Button>
-      <Button type="button" onClick={() => setExpenseOpen(true)}>
-        출금
-      </Button>
-        <HistoryGrid />
+        <Box className={styles.contentWrapper}>
+            <Box className={styles.buttonWrapper}>
+                <Button type="button" variant="outlined" onClick={() => setIncomeOpen(true)}>
+                    입금
+                </Button>
+                <Button type="button" variant="outlined" onClick={() => setExpenseOpen(true)}>
+                    출금
+                </Button>
+            </Box>
+            <Box className={styles.gridWrapper}>
+                <HistoryGrid />
+            </Box>
+        </Box>
 
       {/* 입금 모달 */}
       <AddIncomeModal open={incomeOpen} handleClose={() => setIncomeOpen(false)} />
