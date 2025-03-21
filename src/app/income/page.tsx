@@ -20,6 +20,7 @@ const today = dayjs();
 export default function AddIncomeModal({ open, handleClose }: AddIncomeModalProps) {
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
+  const [writer, setWriter] = useState("");
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -40,6 +41,14 @@ export default function AddIncomeModal({ open, handleClose }: AddIncomeModalProp
           입금 내역 추가
         </Typography>
         <form onSubmit={handleSubmit}>
+          <TextField
+            label="누구?"
+            fullWidth
+            margin="normal"
+            value={writer}
+            onChange={(e) => setWriter(e.target.value)}
+            required
+          />
           <TextField
             label="금액"
             type="number"

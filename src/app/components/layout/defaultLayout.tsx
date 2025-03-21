@@ -33,9 +33,6 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
       {/* 헤더 */}
       <AppBar position="fixed" className="header">
         <Toolbar>
-          <IconButton color="inherit" edge="start" onClick={handleDrawerToggle} className="menu-button">
-            <MenuIcon />
-          </IconButton>
           <Typography variant="h6" noWrap>
             가계부 앱
           </Typography>
