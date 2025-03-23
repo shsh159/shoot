@@ -10,14 +10,24 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import "dayjs/locale/ko"; // 한글 로케일 추가
 
+interface RowData {
+  no: number;
+  description: string;
+  amount: number;
+  date: string;
+  writer: string;
+  type: string;
+}
+
 interface AddIncomeModalProps {
   open: boolean;
   handleClose: () => void;
+  selectedData?: RowData | null;
 }
 
 const today = dayjs();
 
-export default function AddIncomeModal({ open, handleClose }: AddIncomeModalProps) {
+export default function AddIncomeModal({ open, handleClose, selectedData }: AddIncomeModalProps) {
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [writer, setWriter] = useState("");
@@ -37,15 +47,21 @@ export default function AddIncomeModal({ open, handleClose }: AddIncomeModalProp
         <IconButton className={styles.closeButton} onClick={handleClose}>
           <CloseIcon />
         </IconButton>
-        <Typography id="add-income-modal" variant="h5" gutterBottom>
-          입금 내역 추가
-        </Typography>
+        {selectedData ? (
+          <Typography id="add-income-modal" variant="h5" gutterBottom>
+            입금 내역 수정
+          </Typography>
+        ) : (
+          <Typography id="add-income-modal" variant="h5" gutterBottom>
+            입금 내역 추가
+          </Typography>
+        )}
         <form onSubmit={handleSubmit}>
           <TextField
             label="누구?"
             fullWidth
             margin="normal"
-            value={writer}
+            value={selectedData?.writer || writer}
             onChange={(e) => setWriter(e.target.value)}
             required
           />
@@ -54,7 +70,7 @@ export default function AddIncomeModal({ open, handleClose }: AddIncomeModalProp
             type="number"
             fullWidth
             margin="normal"
-            value={amount}
+            value={selectedData?.amount || amount}
             onChange={(e) => setAmount(e.target.value)}
             required
           />
@@ -62,19 +78,25 @@ export default function AddIncomeModal({ open, handleClose }: AddIncomeModalProp
             label="설명"
             fullWidth
             margin="normal"
-            value={description}
+            value={selectedData?.description || description}
             onChange={(e) => setDescription(e.target.value)}
             required
           />
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
             <DatePicker
-              defaultValue={today}
+              defaultValue={selectedData?.date ? dayjs(selectedData.date) : today}
               views={['year', 'month', 'day']}
             />
           </LocalizationProvider>
-          <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
-            추가하기
-          </Button>
+          {selectedData ? (
+            <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+              수정하기
+            </Button>
+          ) : (
+            <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+              추가하기
+            </Button>
+          )}
         </form>
       </Box>
     </Modal>
