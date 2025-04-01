@@ -28,6 +28,7 @@ interface AddIncomeModalProps {
 const today = dayjs();
 
 export default function HistoryAddModal({ open, handleClose, selectedData }: AddIncomeModalProps) {
+  // todo : react-hook-form, zod 적용
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [writer, setWriter] = useState("");
