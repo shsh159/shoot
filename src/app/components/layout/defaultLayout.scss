@@ -40,4 +40,10 @@
     bottom: 0;
     width: 100%;
   }
-  
+  .link {
+    text-decoration: none;
+    color: inherit;
+    &:hover {
+      text-decoration: none; /* 호버 시에도 밑줄 제거 */
+    }
+  }

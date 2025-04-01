@@ -1,7 +1,6 @@
 "use client";
 
 import { AppBar, Box, CssBaseline, Drawer, IconButton, Toolbar, Typography } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
 import "./defaultLayout.scss";
 import Link from "next/link";
@@ -17,10 +16,10 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
 
   const drawer = (
     <Box className="drawer-content">
-      <Link href={''}>
+      <Link href={''} className="link">
         <Typography variant="h6">대시보드</Typography>
       </Link>
-      <Link href={'/list'}>
+      <Link href={'/list'} className="link">
         <Typography variant="h6">히스토리</Typography>
       </Link>
     </Box>
