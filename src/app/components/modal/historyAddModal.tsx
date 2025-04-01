@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { TextField, Button, Typography, Box, Modal, IconButton } from "@mui/material";
+import { TextField, Button, Typography, Box, Modal, IconButton, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import styles from "./page.module.scss";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import styles from "./historyAddModal.module.scss";
 import dayjs from "dayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import "dayjs/locale/ko"; // 한글 로케일 추가
 
 interface RowData {
@@ -19,7 +19,7 @@ interface RowData {
   type: string;
 }
 
-interface AddExpenseModalProps {
+interface AddIncomeModalProps {
   open: boolean;
   handleClose: () => void;
   selectedData?: RowData | null;
@@ -27,14 +27,15 @@ interface AddExpenseModalProps {
 
 const today = dayjs();
 
-export default function AddExpenseModal({ open, handleClose, selectedData }: AddExpenseModalProps) {
+export default function HistoryAddModal({ open, handleClose, selectedData }: AddIncomeModalProps) {
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [writer, setWriter] = useState("");
+  const [addType, setAddType] = useState('');
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    console.log("출금 내역:", { amount, description });
+    console.log("내역:", { amount, description });
 
     setAmount("");
     setDescription("");
@@ -42,22 +43,33 @@ export default function AddExpenseModal({ open, handleClose, selectedData }: Add
   };
 
   return (
-    <Modal open={open} onClose={handleClose} aria-labelledby="add-expense-modal">
+    <Modal open={open} onClose={handleClose} aria-labelledby="add-income-modal">
       <Box className={styles.modalContainer}>
         <IconButton className={styles.closeButton} onClick={handleClose}>
           <CloseIcon />
         </IconButton>
         {selectedData ? (
-          <Typography id="add-expense-modal" variant="h5" gutterBottom>
-            출금 내역 수정
+          <Typography variant="h5" gutterBottom>
+            내역 수정
           </Typography>
         ) : (
-          <Typography id="add-expense-modal" variant="h5" gutterBottom>
-            출금 내역 추가
+          <Typography variant="h5" gutterBottom>
+            내역 추가
           </Typography>
         )}
-        
         <form onSubmit={handleSubmit}>
+        <FormControl fullWidth>
+          <InputLabel id="type-select-label">구분</InputLabel>
+          <Select
+            labelId="type-select-label"
+            value={selectedData?.type || addType}
+            label="구분"
+            onChange={(e) => setAddType(e.target.value)}
+          >
+            <MenuItem value={'income'}>입금</MenuItem>
+            <MenuItem value={'expense'}>출금</MenuItem>
+          </Select>
+        </FormControl>
           <TextField
             label="누구?"
             fullWidth

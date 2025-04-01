@@ -6,9 +6,7 @@ import type { ColDef, CellClickedEvent } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 // Core CSS
 import { AgGridReact } from "ag-grid-react";
-import { Modal, Box, Typography } from "@mui/material";
-import AddIncomeModal from "../income/page";
-import AddExpenseModal from "../expense/page";
+import HistoryAddModal from "./modal/historyAddModal";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -23,8 +21,6 @@ interface IRow {
 }
 
 export default function HistoryGrid() {
-  const [incomeOpen, setIncomeOpen] = useState(false);
-  const [expenseOpen, setExpenseOpen] = useState(false);
   // Row Data
   const [rowData] = useState<IRow[]>([
     { no: 3, description: "입금 테스트", amount: 64950, date: "2025-03-16", writer: 'kim', type:'income' },
@@ -49,7 +45,7 @@ export default function HistoryGrid() {
   // 셀 클릭 이벤트 핸들러
   const handleCellClick = useCallback((event: CellClickedEvent<IRow>) => {
     if (event.data) {
-        event.data.type === 'income' ? setIncomeOpen(true) : setExpenseOpen(true)
+        setModalOpen(true);
         setSelectedRow(event.data);
     }
   }, []);
@@ -63,10 +59,7 @@ export default function HistoryGrid() {
       />
 
       {/* 입금 모달 */}
-      <AddIncomeModal open={incomeOpen} handleClose={() => setIncomeOpen(false)} selectedData={selectedRow} />
-
-      {/* 출금 모달 */}
-      <AddExpenseModal open={expenseOpen} handleClose={() => setExpenseOpen(false)} selectedData={selectedRow} />
+      <HistoryAddModal open={modalOpen} handleClose={() => setModalOpen(false)} selectedData={selectedRow} />
     </div>
   );
 }
