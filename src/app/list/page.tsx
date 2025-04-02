@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Box, Button } from "@mui/material";
-import HistoryGrid from "../components/historyGrid";
+import HistoryGrid from "../components/grid/historyGrid";
 import DefaultLayout from "../components/layout/defaultLayout";
 import styles from "./page.module.scss";
 import HistoryAddModal from "../components/modal/historyAddModal";
