@@ -13,20 +13,20 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 
 // Row Data Interface
 interface IRow {
-  no: number;
+  no?: number;
   description: string;
   amount: number;
-  date: Dayjs;
+  date: string;
   writer: string;
-  type: string;
+  type: "income" | "expense";
 }
 
 export default function HistoryGrid() {
   // Row Data
   const [rowData] = useState<IRow[]>([
-    { no: 3, description: "입금 테스트", amount: 64950, date: dayjs(new Date("2025-03-16")), writer: 'kim', type:'income' },
-    { no: 2, description: "출금 테스트", amount: 33850, date: dayjs(new Date("2025-03-16")), writer: 'byun', type:'expense' },
-    { no: 1, description: "입금 테스트", amount: 29600, date: dayjs(new Date("2025-03-15")), writer: 'byun', type:'income' },
+    { no: 3, description: "입금 테스트", amount: 64950, date: "2025-03-16", writer: 'kim', type:'income' },
+    { no: 2, description: "출금 테스트", amount: 33850, date: "2025-03-16", writer: 'byun', type:'expense' },
+    { no: 1, description: "입금 테스트", amount: 29600, date: "2025-03-15", writer: 'byun', type:'income' },
   ]);
 
   // Column Definitions

@@ -7,15 +7,20 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import "dayjs/locale/ko"; // 한글 로케일 추가
 import { SubmitHandler, useController, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod"; // zod import
 import { useEffect } from "react";
 
+type addType = "income" | "expense";
+
+// 수정된 RowData 인터페이스
 interface RowData {
-  no: number;
+  no?: number;
   description: string;
   amount: number;
-  date: Dayjs; // date는 string으로 되어있습니다.
+  date: string;
   writer: string;
-  type: string;
+  type: addType;
 }
 
 interface AddHistoryModalProps {
@@ -26,16 +31,26 @@ interface AddHistoryModalProps {
 
 const today = dayjs();
 
-export default function HistoryAddModal({ open, handleClose, selectedData }: AddHistoryModalProps) {
+// Zod schema for form validation
+const formSchema = z.object({
+  type: z.enum(['income', 'expense'], { errorMap: () => ({ message: "구분을 선택해주세요." }) }),
+  writer: z.string().min(1, { message: "누구인지 입력해 주세요." }),
+  amount: z.coerce.number().min(1, { message: "금액을 입력해 주세요." }),
+  description: z.string().min(1, { message: "설명을 입력해 주세요." }),
+  date: z.string().min(1, { message: "날짜를 선택해 주세요." }),
+});
 
-  const { control, handleSubmit, watch, setValue } = useForm<RowData>();
+export default function HistoryAddModal({ open, handleClose, selectedData }: AddHistoryModalProps) {
+  const { control, handleSubmit, setValue, formState: { errors }, watch } = useForm<RowData>({
+    resolver: zodResolver(formSchema),
+  });
 
   const {
     field: type,
   } = useController({
     name: 'type',
     control,
-    defaultValue: selectedData?.type || '', // 초기값 처리
+    defaultValue: selectedData?.type || 'income',
   });
 
   const {
@@ -45,7 +60,7 @@ export default function HistoryAddModal({ open, handleClose, selectedData }: Add
     control,
     defaultValue: selectedData?.writer || '', // 초기값 처리
   });
-  
+
   const {
     field: amount,
   } = useController({
@@ -67,10 +82,10 @@ export default function HistoryAddModal({ open, handleClose, selectedData }: Add
   } = useController({
     name: 'date',
     control,
-    defaultValue: selectedData?.date ? dayjs(selectedData.date) : today, // Dayjs 객체로 초기화
+    defaultValue: selectedData?.date ? selectedData.date : String(today.toDate), // Dayjs 객체로 초기화
   });
 
-  const onSubmit = (data: RowData) => {
+  const onSubmit: SubmitHandler<RowData> = (data: RowData) => {
     console.log("내역:", data);
   };
 
@@ -80,7 +95,7 @@ export default function HistoryAddModal({ open, handleClose, selectedData }: Add
       setValue('writer', selectedData.writer);
       setValue('amount', selectedData.amount);
       setValue('description', selectedData.description);
-      setValue('date', dayjs(selectedData.date));
+      setValue('date', selectedData.date);
     }
   }
 
@@ -89,21 +104,15 @@ export default function HistoryAddModal({ open, handleClose, selectedData }: Add
   }, [selectedData]);
 
   return (
-      <Modal open={open} onClose={handleClose} aria-labelledby="add-income-modal">
-        <form onSubmit={handleSubmit(onSubmit)}>
+    <Modal open={open} onClose={handleClose} aria-labelledby="add-income-modal">
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Box className={styles.modalContainer}>
           <IconButton className={styles.closeButton} onClick={handleClose}>
             <CloseIcon />
           </IconButton>
-          {selectedData ? (
-            <Typography variant="h5" gutterBottom>
-              내역 수정
-            </Typography>
-          ) : (
-            <Typography variant="h5" gutterBottom>
-              내역 추가
-            </Typography>
-          )}
+          <Typography variant="h5" gutterBottom>
+            {selectedData ? '내역 수정' : '내역 추가'}
+          </Typography>
           <FormControl fullWidth>
             <InputLabel id="type-select-label">구분</InputLabel>
             <Select
@@ -115,43 +124,46 @@ export default function HistoryAddModal({ open, handleClose, selectedData }: Add
               <MenuItem value={'expense'}>출금</MenuItem>
             </Select>
           </FormControl>
+          {errors.type && <Typography color="error">{errors.type.message}</Typography>}
 
           {/* TextField for Writer */}
           <TextField
-            {...writer} // useController로부터 받은 field 객체를 사용
+            {...writer}
             label="누구?"
             fullWidth
             margin="normal"
+            error={!!errors.writer}
+            helperText={errors.writer?.message}
           />
 
           {/* TextField for Amount */}
           <TextField
-            {...amount} // useController로부터 받은 field 객체를 사용
+            {...amount}
             label="금액"
             type="number"
             fullWidth
             margin="normal"
+            error={!!errors.amount}
+            helperText={errors.amount?.message}
           />
 
           {/* TextField for Description */}
           <TextField
-            {...description} // useController로부터 받은 field 객체를 사용
+            {...description}
             label="설명"
             fullWidth
             margin="normal"
+            error={!!errors.description}
+            helperText={errors.description?.message}
           />
 
           {/* DatePicker for Date */}
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
             <DatePicker
-              value={date.value} // useController로부터 받은 value
+              value={dayjs(date.value)}
               label="날짜"
-              defaultValue={selectedData?.date ? dayjs(selectedData.date) : today}
+              onChange={(newValue) => setValue('date', String(newValue))} // react-hook-form의 setValue 사용
               views={['year', 'month', 'day']}
-              onChange={(newValue) => {
-                // setValue 대신에 직접 date.onChange 호출
-                date.onChange(newValue);
-              }}
             />
           </LocalizationProvider>
 
@@ -160,7 +172,7 @@ export default function HistoryAddModal({ open, handleClose, selectedData }: Add
             {selectedData ? '수정하기' : '추가하기'}
           </Button>
         </Box>
-        </form>
-      </Modal>
+      </form>
+    </Modal>
   );
 }
