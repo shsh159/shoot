@@ -1,19 +1,18 @@
 import { TextField, Button, Typography, Box, Modal, IconButton, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import styles from "./historyAddModal.module.scss";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import "dayjs/locale/ko"; // 한글 로케일 추가
 import { SubmitHandler, useController, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod"; // zod import
+import { z } from "zod";
 import { useEffect } from "react";
 
 type addType = "income" | "expense";
 
-// 수정된 RowData 인터페이스
 interface RowData {
   no?: number;
   description: string;
@@ -31,7 +30,6 @@ interface AddHistoryModalProps {
 
 const today = dayjs();
 
-// Zod schema for form validation
 const formSchema = z.object({
   type: z.enum(['income', 'expense'], { errorMap: () => ({ message: "구분을 선택해주세요." }) }),
   writer: z.string().min(1, { message: "누구인지 입력해 주세요." }),
@@ -58,7 +56,7 @@ export default function HistoryAddModal({ open, handleClose, selectedData }: Add
   } = useController({
     name: 'writer',
     control,
-    defaultValue: selectedData?.writer || '', // 초기값 처리
+    defaultValue: selectedData?.writer || '',
   });
 
   const {
@@ -82,7 +80,7 @@ export default function HistoryAddModal({ open, handleClose, selectedData }: Add
   } = useController({
     name: 'date',
     control,
-    defaultValue: selectedData?.date ? selectedData.date : String(today.toDate), // Dayjs 객체로 초기화
+    defaultValue: selectedData?.date ? selectedData.date : String(today.toDate),
   });
 
   const onSubmit: SubmitHandler<RowData> = (data: RowData) => {
@@ -126,7 +124,6 @@ export default function HistoryAddModal({ open, handleClose, selectedData }: Add
           </FormControl>
           {errors.type && <Typography color="error">{errors.type.message}</Typography>}
 
-          {/* TextField for Writer */}
           <TextField
             {...writer}
             label="누구?"
@@ -136,7 +133,6 @@ export default function HistoryAddModal({ open, handleClose, selectedData }: Add
             helperText={errors.writer?.message}
           />
 
-          {/* TextField for Amount */}
           <TextField
             {...amount}
             label="금액"
@@ -147,7 +143,6 @@ export default function HistoryAddModal({ open, handleClose, selectedData }: Add
             helperText={errors.amount?.message}
           />
 
-          {/* TextField for Description */}
           <TextField
             {...description}
             label="설명"
@@ -157,17 +152,15 @@ export default function HistoryAddModal({ open, handleClose, selectedData }: Add
             helperText={errors.description?.message}
           />
 
-          {/* DatePicker for Date */}
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
             <DatePicker
               value={dayjs(date.value)}
               label="날짜"
-              onChange={(newValue) => setValue('date', String(newValue))} // react-hook-form의 setValue 사용
+              onChange={(newValue) => setValue('date', String(newValue))}
               views={['year', 'month', 'day']}
             />
           </LocalizationProvider>
 
-          {/* Submit Button */}
           <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
             {selectedData ? '수정하기' : '추가하기'}
           </Button>

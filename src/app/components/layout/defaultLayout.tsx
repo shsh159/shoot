@@ -1,11 +1,10 @@
 "use client";
 
-import { AppBar, Box, CssBaseline, Drawer, IconButton, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, CssBaseline, Drawer, Toolbar, Typography } from "@mui/material";
 import { useState } from "react";
 import "./defaultLayout.scss";
 import Link from "next/link";
 
-const drawerWidth = 240;
 
 export default function DefaultLayout({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);

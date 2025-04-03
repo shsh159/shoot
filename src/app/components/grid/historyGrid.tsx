@@ -7,7 +7,6 @@ import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 // Core CSS
 import { AgGridReact } from "ag-grid-react";
 import HistoryAddModal from "../modal/historyAddModal";
-import dayjs, { Dayjs } from "dayjs";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
