@@ -9,9 +9,10 @@ app.use(cors({
     origin: 'http://localhost:3000', // 허용할 출처
 }));
 
+// todo db 연동하기
 const users = {
     id: 1,
-    member: [  // 'member'로 수정
+    member: [
         { id: 1, name: 'John Doe' },
         { id: 2, name: 'Jane Doe' }
     ]
