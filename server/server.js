@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const db = require("./config.js");
 
 const app = express();
 const port = 4000;
@@ -9,18 +10,24 @@ app.use(cors({
     origin: 'http://localhost:3000', // 허용할 출처
 }));
 
-// todo db 연동하기
-const users = {
-    id: 1,
-    member: [
-        { id: 1, name: 'John Doe' },
-        { id: 2, name: 'Jane Doe' }
-    ]
-};
-
 app.get('/list', (req, res) => {
-    console.log('Fetching list');
-    res.json(users);
+    db.getConnection((err, connection) => {
+        if (err) {
+            console.log('errrr', err);
+            res.status(500).send('db error');
+            return;
+        }
+        console.log('Fetching list');
+        connection.query("SELECT ROW_NUMBER() OVER (ORDER BY create_date_time desc) AS no, id, writer, type, amount, description, DATE_FORMAT(create_date_time, '%Y-%m-%d %H:%i:%s') AS date FROM history ORDER BY create_date_time DESC", function (err, result) {
+            connection.release();
+            if (err) {
+                console.log('query error', err);
+                res.status(500).send('Query execution error');
+            } else {
+                res.json(result);
+            }
+        });
+    });
 });
 
 app.listen(port, () => {

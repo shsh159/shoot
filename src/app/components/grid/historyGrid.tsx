@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 // Theme
 import type { ColDef, CellClickedEvent } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
@@ -20,13 +20,9 @@ interface IRow {
   type: "income" | "expense";
 }
 
-export default function HistoryGrid() {
+export default function HistoryGrid({historyList} : {historyList: IRow[]}) {
   // Row Data
-  const [rowData] = useState<IRow[]>([
-    { no: 3, description: "입금 테스트", amount: 64950, date: "2025-03-16", writer: 'kim', type:'income' },
-    { no: 2, description: "출금 테스트", amount: 33850, date: "2025-03-16", writer: 'byun', type:'expense' },
-    { no: 1, description: "입금 테스트", amount: 29600, date: "2025-03-15", writer: 'byun', type:'income' },
-  ]);
+  const [rowData] = useState<IRow[]>(historyList);
 
   // Column Definitions
   const [colDefs] = useState<ColDef<IRow>[]>([
