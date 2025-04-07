@@ -7,6 +7,7 @@ import DefaultLayout from "../components/layout/defaultLayout";
 import styles from "./page.module.scss";
 import HistoryAddModal from "../components/modal/historyAddModal";
 import axios from "axios";
+import { useGetHistoryQuery } from "../api/history.quries";
 
 interface IRow {
   no?: number;
@@ -21,19 +22,11 @@ export default function List() {
   const [modalOpen, setModalOpen] = useState(false);
   const [data, setData] = useState<IRow[] | null>(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:4000/list');
-      
-        setData(response.data); 
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+  const { data : historyList } = useGetHistoryQuery();
 
-    fetchData();
-  }, []);
+  useEffect(() => {
+    setData(historyList)
+  }, [historyList]);
 
   return (
     <DefaultLayout>
