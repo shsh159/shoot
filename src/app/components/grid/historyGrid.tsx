@@ -42,7 +42,6 @@ export default function HistoryGrid({historyList} : {historyList: IRow[]}) {
   // 셀 클릭 이벤트 핸들러
   const handleCellClick = useCallback((event: CellClickedEvent<IRow>) => {
     if (event.data) {
-      console.log('eee', event.data)
         setModalOpen(true);
         setSelectedRow(event.data);
     }

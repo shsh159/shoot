@@ -18,7 +18,7 @@ app.get('/list', (req, res) => {
             return;
         }
         console.log('Fetching list');
-        connection.query("SELECT ROW_NUMBER() OVER (ORDER BY create_date_time desc) AS no, id, writer, type, amount, description, DATE_FORMAT(create_date_time, '%Y-%m-%d %H:%i:%s') AS date FROM history ORDER BY create_date_time DESC", function (err, result) {
+        connection.query("SELECT ROW_NUMBER() OVER (ORDER BY create_date_time desc) AS no, id, writer, type, amount, description, target_date AS date FROM history ORDER BY create_date_time DESC", function (err, result) {
             connection.release();
             if (err) {
                 console.log('query error', err);
@@ -31,7 +31,7 @@ app.get('/list', (req, res) => {
 });
 
 app.post('/add', (req, res) => {
-    const { writer, type, amount, description } = req.body.transformedData;
+    const { writer, type, amount, description, date } = req.body.transformedData;
 
     if (!writer || !amount || !description) {
         return res.status(400).send('Missing required fields');
@@ -45,8 +45,8 @@ app.post('/add', (req, res) => {
         }
 
         console.log('Inserting new record');
-        const query = "INSERT INTO history (writer, type, amount, description) VALUES (?, ?, ?, ?)";
-        connection.query(query, [writer, type, amount, description], (err, result) => {
+        const query = "INSERT INTO history (writer, type, amount, description, target_date, create_date_time) VALUES (?, ?, ?, ?, ?, NOW())";
+        connection.query(query, [writer, type, amount, description, date], (err, result) => {
             connection.release();
             if (err) {
                 console.log('query error', err);
@@ -59,7 +59,7 @@ app.post('/add', (req, res) => {
 });
 
 app.put('/update', (req, res) => {
-    const { id, writer, type, amount, description } = req.body.transformedData;
+    const { id, writer, type, amount, description, date } = req.body.transformedData;
 
     if (!writer || !amount || !description) {
         return res.status(400).send('Missing required fields');
@@ -72,8 +72,8 @@ app.put('/update', (req, res) => {
             return;
         }
 
-        const query = "UPDATE history SET writer = ?, type = ?, amount = ?, description = ?, update_date_time = NOW() WHERE id = ?";
-        connection.query(query, [writer, type, amount, description, id], (err, result) => {
+        const query = "UPDATE history SET writer = ?, type = ?, amount = ?, description = ?, target_date = ?, update_date_time = NOW() WHERE id = ?";
+        connection.query(query, [writer, type, amount, description, date, id], (err, result) => {
             connection.release();
             if (err) {
                 console.log('query error', err);

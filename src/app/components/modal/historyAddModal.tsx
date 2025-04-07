@@ -11,6 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { format } from 'date-fns';
 
 type addType = "income" | "expense";
 
@@ -93,10 +94,10 @@ export default function HistoryAddModal({ open, handleClose, selectedData }: Add
       writer: data.writer,
       type: data.type,
       amount: data.amount,
-      description: data.description
+      description: data.description,
+      date: format(data.date, 'yyyy-MM-dd')
     };
     try {
-      console.log('test', selectId, !transformedData.id)
       if (transformedData.id < 1) {
         const response = await axios.post('http://localhost:4000/add', {
           transformedData
