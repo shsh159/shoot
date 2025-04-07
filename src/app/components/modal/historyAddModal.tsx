@@ -9,12 +9,14 @@ import "dayjs/locale/ko"; // 한글 로케일 추가
 import { SubmitHandler, useController, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 type addType = "income" | "expense";
 
 interface RowData {
   no?: number;
+  id?: number;
   description: string;
   amount: number;
   date: string;
@@ -42,6 +44,7 @@ export default function HistoryAddModal({ open, handleClose, selectedData }: Add
   const { control, handleSubmit, setValue, formState: { errors }, watch } = useForm<RowData>({
     resolver: zodResolver(formSchema),
   });
+  const [selectId, setSeletedId] = useState<number>(selectedData?.id || 0);
 
   const {
     field: type,
@@ -83,12 +86,36 @@ export default function HistoryAddModal({ open, handleClose, selectedData }: Add
     defaultValue: selectedData?.date ? selectedData.date : String(today.toDate),
   });
 
-  const onSubmit: SubmitHandler<RowData> = (data: RowData) => {
+  const onSubmit: SubmitHandler<RowData> = async (data: RowData) => {
     console.log("내역:", data);
+    const transformedData = {
+      id: selectId,
+      writer: data.writer,
+      type: data.type,
+      amount: data.amount,
+      description: data.description
+    };
+    try {
+      console.log('test', selectId, !transformedData.id)
+      if (transformedData.id < 1) {
+        const response = await axios.post('http://localhost:4000/add', {
+          transformedData
+        });
+        console.log('response', response)
+      } else {
+        const response = await axios.put('http://localhost:4000/update', {
+          transformedData
+        });
+        console.log('response', response)
+      }
+    } catch (err) {
+      console.error('errr', err);
+    }
   };
 
   const initForm = () => {
     if (selectedData) {
+      setSeletedId(selectedData.id || 0)
       setValue('type', selectedData.type);
       setValue('writer', selectedData.writer);
       setValue('amount', selectedData.amount);
