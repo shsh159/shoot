@@ -6,8 +6,7 @@ import HistoryGrid from "../components/grid/historyGrid";
 import DefaultLayout from "../components/layout/defaultLayout";
 import styles from "./page.module.scss";
 import HistoryAddModal from "../components/modal/historyAddModal";
-import axios from "axios";
-import { useGetHistoryQuery } from "../api/history.quries";
+import { useGetHistoryList } from "../api/history.quries";
 
 interface IRow {
   no?: number;
@@ -22,7 +21,7 @@ export default function List() {
   const [modalOpen, setModalOpen] = useState(false);
   const [data, setData] = useState<IRow[] | null>(null);
 
-  const { data : historyList } = useGetHistoryQuery();
+  const { data : historyList } = useGetHistoryList();
 
   useEffect(() => {
     setData(historyList)

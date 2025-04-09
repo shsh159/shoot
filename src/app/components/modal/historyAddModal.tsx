@@ -12,6 +12,7 @@ import { z } from "zod";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { format } from 'date-fns';
+import { usePostHistoryAdd } from "@/app/api/history.mutation";
 
 type addType = "income" | "expense";
 
@@ -87,6 +88,8 @@ export default function HistoryAddModal({ open, handleClose, selectedData }: Add
     defaultValue: selectedData?.date ? selectedData.date : String(today.toDate),
   });
 
+  const {mutate: addHistory} = usePostHistoryAdd();
+
   const onSubmit: SubmitHandler<RowData> = async (data: RowData) => {
     console.log("내역:", data);
     const transformedData = {
@@ -99,10 +102,10 @@ export default function HistoryAddModal({ open, handleClose, selectedData }: Add
     };
     try {
       if (transformedData.id < 1) {
-        const response = await axios.post('http://localhost:4000/add', {
-          transformedData
-        });
-        console.log('response', response)
+        const response = addHistory(transformedData);
+        // const response = await axios.post('http://localhost:4000/add', {
+        //   transformedData
+        // });
       } else {
         const response = await axios.put('http://localhost:4000/update', {
           transformedData
@@ -112,6 +115,7 @@ export default function HistoryAddModal({ open, handleClose, selectedData }: Add
     } catch (err) {
       console.error('errr', err);
     }
+    handleClose();
   };
 
   const initForm = () => {

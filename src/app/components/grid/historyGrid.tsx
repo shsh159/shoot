@@ -23,7 +23,7 @@ interface IRow {
 
 export default function HistoryGrid({historyList} : {historyList: IRow[]}) {
   // Row Data
-  const [rowData] = useState<IRow[]>(historyList);
+  const [rowData, setRowData] = useState<IRow[]>(historyList);
 
   // Column Definitions
   const [colDefs] = useState<ColDef<IRow>[]>([
@@ -46,6 +46,12 @@ export default function HistoryGrid({historyList} : {historyList: IRow[]}) {
         setSelectedRow(event.data);
     }
   }, []);
+
+  useEffect(()=>{
+    if (historyList) {
+      setRowData(historyList);
+    }
+  }, [historyList])
 
   return (
     <div style={{ width: "100%", height: "100%" }}>

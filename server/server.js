@@ -31,7 +31,7 @@ app.get('/list', (req, res) => {
 });
 
 app.post('/add', (req, res) => {
-    const { writer, type, amount, description, date } = req.body.transformedData;
+    const { writer, type, amount, description, date } = req.body;
 
     if (!writer || !amount || !description) {
         return res.status(400).send('Missing required fields');
@@ -52,7 +52,8 @@ app.post('/add', (req, res) => {
                 console.log('query error', err);
                 res.status(500).send('Query execution error');
             } else {
-                res.status(201).send('Record inserted successfully');
+                res.status(201).json({message: 'Record inserted successfully'});
+                return res;
             }
         });
     });
