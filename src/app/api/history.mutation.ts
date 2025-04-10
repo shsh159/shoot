@@ -12,7 +12,7 @@ export const usePostHistoryAdd = () => {
       });
     },
     onError: (error: any) => {
-        console.log('!!!', error.response.data)
+        console.log('addHistory error', error.response.data)
     },
   });
 };
@@ -28,7 +28,7 @@ export const usePutHistoryModify = () => {
         });
       },
       onError: (error: any) => {
-          console.log('!!!', error.response.data)
+          console.log('modifyHistory error', error.response.data)
       },
     });
   };
