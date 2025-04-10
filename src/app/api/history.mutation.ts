@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addHistory } from './history.api';
+import { addHistory, modifyHistory } from './history.api';
 
 export const usePostHistoryAdd = () => {
   const queryClient = useQueryClient();
@@ -10,10 +10,25 @@ export const usePostHistoryAdd = () => {
       queryClient.invalidateQueries({
         queryKey: ['FETCH_HISTORY_LIST'],
       });
-      return data.message;
     },
     onError: (error: any) => {
-      console.error('mutate add err', error);
+        console.log('!!!', error.response.data)
     },
   });
 };
+
+export const usePutHistoryModify = () => {
+    const queryClient = useQueryClient();
+  
+    return useMutation({
+      mutationFn: modifyHistory,
+      onSuccess: (data) => {
+        queryClient.invalidateQueries({
+          queryKey: ['FETCH_HISTORY_LIST'],
+        });
+      },
+      onError: (error: any) => {
+          console.log('!!!', error.response.data)
+      },
+    });
+  };

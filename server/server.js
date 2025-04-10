@@ -34,7 +34,7 @@ app.post('/add', (req, res) => {
     const { writer, type, amount, description, date } = req.body;
 
     if (!writer || !amount || !description) {
-        return res.status(400).send('Missing required fields');
+        return res.status(400).json({message: '필수 입력 필드를 확인해주세요.'});
     }
 
     db.getConnection((err, connection) => {
@@ -50,9 +50,9 @@ app.post('/add', (req, res) => {
             connection.release();
             if (err) {
                 console.log('query error', err);
-                res.status(500).send('Query execution error');
+                res.status(500).json({message: '저장 중 에러가 발생하였습니다.'});
             } else {
-                res.status(201).json({message: 'Record inserted successfully'});
+                res.status(201).json({message: '저장이 완료 되었습니다.'});
                 return res;
             }
         });
@@ -60,10 +60,10 @@ app.post('/add', (req, res) => {
 });
 
 app.put('/update', (req, res) => {
-    const { id, writer, type, amount, description, date } = req.body.transformedData;
+    const { id, writer, type, amount, description, date } = req.body;
 
     if (!writer || !amount || !description) {
-        return res.status(400).send('Missing required fields');
+        return res.status(400).json({message: '필수 입력 필드를 확인해주세요.'});
     }
 
     db.getConnection((err, connection) => {
@@ -78,12 +78,10 @@ app.put('/update', (req, res) => {
             connection.release();
             if (err) {
                 console.log('query error', err);
-                res.status(500).send('Query execution error');
+                res.status(500).json({message: '저장 중 에러가 발생하였습니다.'});
             } else {
-                if (result.affectedRows === 0) {
-                    return res.status(404).send('Record not found');
-                }
-                res.status(200).send('Record updated successfully');
+                res.status(201).json({message: '저장이 완료 되었습니다.'});
+                return res;
             }
         });
     });

@@ -1,3 +1,4 @@
+import GlobalAlert from "./components/alert/globalAlert"
 import Providers from "./provider"
 
 export const metadata = {
@@ -14,6 +15,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Providers>{children}</Providers>
+        <GlobalAlert />
       </body>
     </html>
   )
