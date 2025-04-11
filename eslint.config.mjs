@@ -1,6 +1,6 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import { FlatCompat } from '@eslint/eslintrc';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -9,8 +9,23 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
-];
+export default [
+  ...compat.extends('next/core-web-vitals', 'plugin:prettier/recommended'),
 
-export default eslintConfig;
+  {
+    files: ['**/*.{ts,tsx,js,jsx}'],
+    languageOptions: {
+      parserOptions: {
+        ecmaVersion: 2022,
+        sourceType: 'module',
+      },
+    },
+    rules: {
+      semi: ['error', 'always'], // 세미콜론 필수
+      indent: ['error', 2], // 들여쓰기 2칸
+      'linebreak-style': ['error', 'unix'], // 줄바꿈 LF (유닉스)
+      quotes: ['error', 'single'], // 작은 따옴표 사용
+      'prettier/prettier': 'error', // prettier와 충돌 방지
+    },
+  },
+];
