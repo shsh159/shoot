@@ -21,12 +21,12 @@ export default function HistoryGrid({
 
   // Column Definitions
   const [colDefs] = useState<ColDef<RowData>[]>([
-    { field: 'no' },
-    { field: 'description' },
-    { field: 'amount' },
-    { field: 'date' },
-    { field: 'writer' },
-    { field: 'type' },
+    { field: 'no', width: 70 },
+    { field: 'description', flex: 1 },
+    { field: 'amount', width: 120 },
+    { field: 'date', width: 140 },
+    { field: 'writer', width: 120 },
+    { field: 'type', width: 100 },
   ]);
 
   // 모달 상태 및 선택된 row 데이터
