@@ -10,22 +10,10 @@ import { SubmitHandler, useController, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { format } from 'date-fns';
 import { usePostHistoryAdd, usePutHistoryModify } from "@/app/api/history.mutation";
 import { useAlertStore } from "@/app/stores/useAlertStore";
-
-type addType = "income" | "expense";
-
-interface RowData {
-  no?: number;
-  id?: number;
-  description: string;
-  amount: number;
-  date: string;
-  writer: string;
-  type: addType;
-}
+import { RowData } from "@/app/types";
 
 interface AddHistoryModalProps {
   open: boolean;

@@ -7,19 +7,11 @@ import DefaultLayout from "../components/layout/defaultLayout";
 import styles from "./page.module.scss";
 import HistoryAddModal from "../components/modal/historyAddModal";
 import { useGetHistoryList } from "../api/history.quries";
-
-interface IRow {
-  no?: number;
-  description: string;
-  amount: number;
-  date: string;
-  writer: string;
-  type: "income" | "expense";
-}
+import { RowData } from "../types";
 
 export default function List() {
   const [modalOpen, setModalOpen] = useState(false);
-  const [data, setData] = useState<IRow[] | null>(null);
+  const [data, setData] = useState<RowData[] | null>(null);
 
   const { data : historyList } = useGetHistoryList();
 
