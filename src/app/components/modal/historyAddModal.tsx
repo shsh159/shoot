@@ -45,7 +45,7 @@ const formSchema = z.object({
 
 export default function HistoryAddModal({ open, handleClose, selectedData }: AddHistoryModalProps) {
   console.log('??', selectedData)
-  const { control, handleSubmit, setValue, formState: { errors }, watch } = useForm<RowData>({
+  const { control, handleSubmit, setValue, formState: { errors }, reset } = useForm<RowData>({
     resolver: zodResolver(formSchema),
   });
   const [selectId, setSeletedId] = useState<number>(selectedData?.id || 0);
@@ -118,6 +118,7 @@ export default function HistoryAddModal({ open, handleClose, selectedData }: Add
             }
           }
         );
+        reset();
       } else {
         modifyHistory(transformedData,
           {
@@ -130,6 +131,7 @@ export default function HistoryAddModal({ open, handleClose, selectedData }: Add
             }
           }
         );
+        reset();
       }
     } catch (e) {
       console.error('onSubmit Exception', e);
