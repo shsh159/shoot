@@ -18,7 +18,7 @@ app.get('/list', (req, res) => {
             return;
         }
         console.log('Fetching list');
-        connection.query("SELECT ROW_NUMBER() OVER (ORDER BY create_date_time desc) AS no, id, writer, type, amount, description, target_date AS date FROM history ORDER BY create_date_time DESC", function (err, result) {
+        connection.query("SELECT ROW_NUMBER() OVER (ORDER BY create_date_time desc) AS no, id, writer, type, amount, description, target_date AS date FROM history ORDER BY target_date DESC, create_date_time DESC", function (err, result) {
             connection.release();
             if (err) {
                 console.log('query error', err);
