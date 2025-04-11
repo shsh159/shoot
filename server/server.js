@@ -21,7 +21,7 @@ app.get('/list', (req, res) => {
     }
     console.log('Fetching list');
     const query =
-      'SELECT ROW_NUMBER() OVER (ORDER BY create_date_time desc) AS no, id, writer, type, amount, description, target_date AS date FROM history ORDER BY target_date DESC, create_date_time DESC';
+      'SELECT ROW_NUMBER() OVER (ORDER BY target_date DESC, create_date_time DESC) AS no, id, writer, type, amount, description, target_date AS date FROM history ORDER BY target_date DESC, create_date_time DESC';
     connection.query(query, function (err, result) {
       connection.release();
       if (err) {
