@@ -1,19 +1,33 @@
-import { TextField, Button, Typography, Box, Modal, IconButton, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import styles from "./historyAddModal.module.scss";
-import dayjs from "dayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import {
+  TextField,
+  Button,
+  Typography,
+  Box,
+  Modal,
+  IconButton,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import styles from './historyAddModal.module.scss';
+import dayjs from 'dayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import "dayjs/locale/ko"; // 한글 로케일 추가
-import { SubmitHandler, useController, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useEffect, useState } from "react";
+import 'dayjs/locale/ko'; // 한글 로케일 추가
+import { SubmitHandler, useController, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import { usePostHistoryAdd, usePutHistoryModify } from "@/app/api/history.mutation";
-import { useAlertStore } from "@/app/stores/useAlertStore";
-import { RowData } from "@/app/types";
+import {
+  usePostHistoryAdd,
+  usePutHistoryModify,
+} from '@/app/api/history.mutation';
+import { useAlertStore } from '@/app/stores/useAlertStore';
+import { RowData } from '@/app/types';
 
 interface AddHistoryModalProps {
   open: boolean;
@@ -24,101 +38,99 @@ interface AddHistoryModalProps {
 const today = dayjs();
 
 const formSchema = z.object({
-  type: z.enum(['income', 'expense'], { errorMap: () => ({ message: "구분을 선택해주세요." }) }),
-  writer: z.string().min(1, { message: "누구인지 입력해 주세요." }),
-  amount: z.coerce.number().min(1, { message: "금액을 입력해 주세요." }),
-  description: z.string().min(1, { message: "설명을 입력해 주세요." }),
-  date: z.string().min(1, { message: "날짜를 선택해 주세요." }),
+  type: z.enum(['income', 'expense'], {
+    errorMap: () => ({ message: '구분을 선택해주세요.' }),
+  }),
+  writer: z.string().min(1, { message: '누구인지 입력해 주세요.' }),
+  amount: z.coerce.number().min(1, { message: '금액을 입력해 주세요.' }),
+  description: z.string().min(1, { message: '설명을 입력해 주세요.' }),
+  date: z.string().min(1, { message: '날짜를 선택해 주세요.' }),
 });
 
-export default function HistoryAddModal({ open, handleClose, selectedData }: AddHistoryModalProps) {
-  console.log('??', selectedData)
-  const { control, handleSubmit, setValue, formState: { errors }, reset } = useForm<RowData>({
+export default function HistoryAddModal({
+  open,
+  handleClose,
+  selectedData,
+}: AddHistoryModalProps) {
+  console.log('??', selectedData);
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    reset,
+  } = useForm<RowData>({
     resolver: zodResolver(formSchema),
   });
   const [selectId, setSeletedId] = useState<number>(selectedData?.id || 0);
 
-  const {
-    field: type,
-  } = useController({
+  const { field: type } = useController({
     name: 'type',
     control,
     defaultValue: selectedData?.type || 'income',
   });
 
-  const {
-    field: writer,
-  } = useController({
+  const { field: writer } = useController({
     name: 'writer',
     control,
     defaultValue: selectedData?.writer || '',
   });
 
-  const {
-    field: amount,
-  } = useController({
+  const { field: amount } = useController({
     name: 'amount',
     control,
     defaultValue: selectedData?.amount || 0,
   });
 
-  const {
-    field: description,
-  } = useController({
+  const { field: description } = useController({
     name: 'description',
     control,
     defaultValue: selectedData?.description || '',
   });
 
-  const {
-    field: date,
-  } = useController({
+  const { field: date } = useController({
     name: 'date',
     control,
     defaultValue: selectedData?.date ? selectedData.date : String(today.toDate),
   });
 
-  const {mutate: addHistory} = usePostHistoryAdd();
-  const {mutate:modifyHistory} = usePutHistoryModify();
+  const { mutate: addHistory } = usePostHistoryAdd();
+  const { mutate: modifyHistory } = usePutHistoryModify();
 
   const showAlert = useAlertStore((state) => state.showAlert);
 
   const onSubmit: SubmitHandler<RowData> = async (data: RowData) => {
-    console.log("내역:", data);
+    console.log('내역:', data);
     const transformedData = {
       id: selectId,
       writer: data.writer,
       type: data.type,
       amount: data.amount,
       description: data.description,
-      date: format(data.date, 'yyyy-MM-dd')
+      date: format(data.date, 'yyyy-MM-dd'),
     };
     try {
       if (transformedData.id < 1) {
-        addHistory(transformedData,
-          {
-            onSuccess(data) {
-              showAlert('success', data.message);
-              handleClose();
-            },
-            onError(error){
-              showAlert('error', error.response.data.message);
-            }
-          }
-        );
+        addHistory(transformedData, {
+          onSuccess(data) {
+            showAlert('success', data.message);
+            handleClose();
+          },
+          onError(error) {
+            showAlert('error', error.response.data.message);
+          },
+        });
         reset();
       } else {
-        modifyHistory(transformedData,
-          {
-            onSuccess(data) {
-              showAlert('success', data.message);
-              handleClose();
-            },
-            onError(error){
-              showAlert('error', error.response.data.message);
-            }
-          }
-        );
+        modifyHistory(transformedData, {
+          onSuccess(data) {
+            showAlert('success', data.message);
+            handleClose();
+          },
+          onError(error) {
+            showAlert('error', error.response.data.message);
+          },
+        });
         reset();
       }
     } catch (e) {
@@ -128,14 +140,14 @@ export default function HistoryAddModal({ open, handleClose, selectedData }: Add
 
   const initForm = () => {
     if (selectedData) {
-      setSeletedId(selectedData.id || 0)
+      setSeletedId(selectedData.id || 0);
       setValue('type', selectedData.type);
       setValue('writer', selectedData.writer);
       setValue('amount', selectedData.amount);
       setValue('description', selectedData.description);
       setValue('date', selectedData.date);
     }
-  }
+  };
 
   useEffect(() => {
     initForm();
@@ -153,16 +165,14 @@ export default function HistoryAddModal({ open, handleClose, selectedData }: Add
           </Typography>
           <FormControl fullWidth>
             <InputLabel id="type-select-label">구분</InputLabel>
-            <Select
-              {...type}
-              labelId="type-select-label"
-              label="구분"
-            >
+            <Select {...type} labelId="type-select-label" label="구분">
               <MenuItem value={'income'}>입금</MenuItem>
               <MenuItem value={'expense'}>출금</MenuItem>
             </Select>
           </FormControl>
-          {errors.type && <Typography color="error">{errors.type.message}</Typography>}
+          {errors.type && (
+            <Typography color="error">{errors.type.message}</Typography>
+          )}
 
           <TextField
             {...writer}
@@ -201,7 +211,13 @@ export default function HistoryAddModal({ open, handleClose, selectedData }: Add
             />
           </LocalizationProvider>
 
-          <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ mt: 2 }}
+          >
             {selectedData ? '수정하기' : '추가하기'}
           </Button>
         </Box>

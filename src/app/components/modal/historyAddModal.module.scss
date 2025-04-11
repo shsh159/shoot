@@ -1,18 +1,17 @@
 .modalContainer {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 400px;
-    background-color: white;
-    box-shadow: 24px;
-    padding: 16px;
-    border-radius: 8px;
-  }
-  
-  .closeButton {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-  }
-  
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  background-color: white;
+  box-shadow: 24px;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.closeButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}

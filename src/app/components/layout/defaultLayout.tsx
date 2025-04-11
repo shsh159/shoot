@@ -1,12 +1,22 @@
-"use client";
+'use client';
 
-import { AppBar, Box, CssBaseline, Drawer, Toolbar, Typography } from "@mui/material";
-import { useState } from "react";
-import "./defaultLayout.scss";
-import Link from "next/link";
+import {
+  AppBar,
+  Box,
+  CssBaseline,
+  Drawer,
+  Toolbar,
+  Typography,
+} from '@mui/material';
+import { useState } from 'react';
+import './defaultLayout.scss';
+import Link from 'next/link';
 
-
-export default function DefaultLayout({ children }: { children: React.ReactNode }) {
+export default function DefaultLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
@@ -27,7 +37,7 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
   return (
     <Box className="layout-container">
       <CssBaseline />
-      
+
       {/* 헤더 */}
       <AppBar position="fixed" className="header">
         <Toolbar>
@@ -36,7 +46,7 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
           </Typography>
         </Toolbar>
       </AppBar>
-      
+
       <Box className="content-wrapper">
         {/* 사이드바 */}
         <Drawer
@@ -48,20 +58,16 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
         >
           {drawer}
         </Drawer>
-        <Drawer
-          variant="permanent"
-          className="desktop-drawer"
-          open
-        >
+        <Drawer variant="permanent" className="desktop-drawer" open>
           {drawer}
         </Drawer>
-        
+
         {/* 메인 콘텐츠 */}
         <Box component="main" className="main-content">
           {children}
         </Box>
       </Box>
-      
+
       {/* 푸터 */}
       <Box component="footer" className="footer">
         <Typography variant="body2">© 2025 가계부 앱</Typography>

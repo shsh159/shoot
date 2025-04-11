@@ -1,28 +1,32 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from 'react';
 // Theme
-import type { ColDef, CellClickedEvent } from "ag-grid-community";
-import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
+import type { ColDef, CellClickedEvent } from 'ag-grid-community';
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 // Core CSS
-import { AgGridReact } from "ag-grid-react";
-import HistoryAddModal from "../modal/historyAddModal";
-import { RowData } from "@/app/types";
+import { AgGridReact } from 'ag-grid-react';
+import HistoryAddModal from '../modal/historyAddModal';
+import { RowData } from '@/app/types';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-export default function HistoryGrid({historyList} : {historyList: RowData[]}) {
+export default function HistoryGrid({
+  historyList,
+}: {
+  historyList: RowData[];
+}) {
   // Row Data
   const [rowData, setRowData] = useState<RowData[]>(historyList);
 
   // Column Definitions
   const [colDefs] = useState<ColDef<RowData>[]>([
-    { field: "no" },
-    { field: "description" },
-    { field: "amount" },
-    { field: "date" },
-    { field: "writer" },
-    { field: "type"}
+    { field: 'no' },
+    { field: 'description' },
+    { field: 'amount' },
+    { field: 'date' },
+    { field: 'writer' },
+    { field: 'type' },
   ]);
 
   // 모달 상태 및 선택된 row 데이터
@@ -32,19 +36,19 @@ export default function HistoryGrid({historyList} : {historyList: RowData[]}) {
   // 셀 클릭 이벤트 핸들러
   const handleCellClick = useCallback((event: CellClickedEvent<RowData>) => {
     if (event.data) {
-        setModalOpen(true);
-        setSelectedRow(event.data);
+      setModalOpen(true);
+      setSelectedRow(event.data);
     }
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (historyList) {
       setRowData(historyList);
     }
-  }, [historyList])
+  }, [historyList]);
 
   return (
-    <div style={{ width: "100%", height: "100%" }}>
+    <div style={{ width: '100%', height: '100%' }}>
       <AgGridReact
         rowData={rowData}
         columnDefs={colDefs}
@@ -52,7 +56,11 @@ export default function HistoryGrid({historyList} : {historyList: RowData[]}) {
       />
 
       {/* 입금 모달 */}
-      <HistoryAddModal open={modalOpen} handleClose={() => setModalOpen(false)} selectedData={selectedRow} />
+      <HistoryAddModal
+        open={modalOpen}
+        handleClose={() => setModalOpen(false)}
+        selectedData={selectedRow}
+      />
     </div>
   );
 }

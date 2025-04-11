@@ -38,8 +38,10 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint": "^9",
+    "eslint": "^9.22.0",
     "eslint-config-next": "15.2.2",
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-prettier": "^5.2.6",
     "nodemon": "^3.1.9",
     "typescript": "^5"
   }

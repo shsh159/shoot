@@ -8,4 +8,4 @@ export type RowData = {
   date: string;
   writer: string;
   type: AddType;
-}
+};
