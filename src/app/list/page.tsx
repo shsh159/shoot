@@ -1,27 +1,21 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Box, Button } from '@mui/material';
 import HistoryGrid from '../components/grid/historyGrid';
 import DefaultLayout from '../components/layout/defaultLayout';
 import styles from './page.module.scss';
 import HistoryAddModal from '../components/modal/historyAddModal';
 import { useGetHistoryList } from '../api/history.quries';
-import { RowData } from '../types';
 
 export default function List() {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [data, setData] = useState<RowData[] | null>(null);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
-  const { data: historyList } = useGetHistoryList();
-
-  useEffect(() => {
-    setData(historyList);
-  }, [historyList]);
+  const { data: historyList, isLoading } = useGetHistoryList();
 
   return (
     <DefaultLayout>
-      {data && (
+      {!isLoading && (
         <>
           <Box className={styles.contentWrapper}>
             <Box className={styles.buttonWrapper}>
@@ -34,7 +28,7 @@ export default function List() {
               </Button>
             </Box>
             <Box className={styles.gridWrapper}>
-              <HistoryGrid historyList={data} />
+              <HistoryGrid historyList={historyList} />
             </Box>
           </Box>
           <HistoryAddModal
