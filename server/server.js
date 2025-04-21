@@ -1,4 +1,5 @@
 const express = require('express');
+const prisma = require('./prismaClient');
 const cors = require('cors');
 const db = require('./config.js');
 
@@ -12,27 +13,47 @@ app.use(
   }),
 );
 
-app.get('/list', (req, res) => {
-  db.getConnection((err, connection) => {
-    if (err) {
-      console.log('errrr', err);
-      res.status(500).send('db error');
-      return;
-    }
-    console.log('Fetching list');
-    const query =
-      'SELECT ROW_NUMBER() OVER (ORDER BY target_date DESC, create_date_time DESC) AS no, id, writer, type, amount, description, target_date AS date FROM history ORDER BY target_date DESC, create_date_time DESC';
-    connection.query(query, function (err, result) {
-      connection.release();
-      if (err) {
-        console.log('query error', err);
-        res.status(500).send('Query execution error');
-      } else {
-        res.json(result);
-      }
+app.get('/list', async (req, res) => {
+  try {
+    const result = await prisma.history.findMany({
+      orderBy: [{ target_date: 'desc' }, { create_date_time: 'desc' }],
     });
-  });
+
+    // ROW_NUMBER 흉내
+    const formatted = result.map((row, index) => ({
+      no: index + 1,
+      ...row,
+      date: row.target_date,
+    }));
+
+    res.json(formatted);
+  } catch (err) {
+    console.error('Error fetching list', err);
+    res.status(500).send('DB 오류');
+  }
 });
+
+// app.get('/list', (req, res) => {
+//   db.getConnection((err, connection) => {
+//     if (err) {
+//       console.log('errrr', err);
+//       res.status(500).send('db error');
+//       return;
+//     }
+//     console.log('Fetching list');
+//     const query =
+//       'SELECT ROW_NUMBER() OVER (ORDER BY target_date DESC, create_date_time DESC) AS no, id, writer, type, amount, description, target_date AS date FROM history ORDER BY target_date DESC, create_date_time DESC';
+//     connection.query(query, function (err, result) {
+//       connection.release();
+//       if (err) {
+//         console.log('query error', err);
+//         res.status(500).send('Query execution error');
+//       } else {
+//         res.json(result);
+//       }
+//     });
+//   });
+// });
 
 app.post('/add', (req, res) => {
   const { writer, type, amount, description, date } = req.body;

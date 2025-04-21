@@ -7,10 +7,10 @@ export const fetchHistoryList = async () => {
 
 export const addHistory = async (historyData: any): Promise<any> => {
   const response = await axios.post('http://localhost:4000/add', historyData);
-  return response.data; // 응답이 string 타입이므로, 그대로 반환
+  return response.data;
 };
 
 export const modifyHistory = async (historyData: any): Promise<any> => {
   const response = await axios.put('http://localhost:4000/update', historyData);
-  return response.data; // 응답이 string 타입이므로, 그대로 반환
+  return response.data;
 };
