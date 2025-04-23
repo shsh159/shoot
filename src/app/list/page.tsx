@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Box, Button } from '@mui/material';
+import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import HistoryGrid from '../components/grid/historyGrid';
 import DefaultLayout from '../components/layout/defaultLayout';
 import styles from './page.module.scss';
@@ -15,7 +15,7 @@ export default function List() {
 
   return (
     <DefaultLayout>
-      {!isLoading && (
+      {!isLoading ? (
         <>
           <Box className={styles.contentWrapper}>
             <Box className={styles.buttonWrapper}>
@@ -36,6 +36,22 @@ export default function List() {
             handleClose={() => setModalOpen(false)}
           />
         </>
+      ) : (
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          height="300px"
+          textAlign="center"
+        >
+          {/* MUI 기본 스피너 */}
+          <CircularProgress size={40} />
+
+          <Typography variant="body1" mt={2}>
+            불러오는 중...
+          </Typography>
+        </Box>
       )}
     </DefaultLayout>
   );

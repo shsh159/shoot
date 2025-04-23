@@ -1,5 +1,4 @@
-// components/GlobalMuiAlert.tsx
-'use client'; // Next.js App Router 사용 시 필요
+'use client';
 
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
