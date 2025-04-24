@@ -52,7 +52,6 @@ export default function HistoryAddModal({
   handleClose,
   selectedData,
 }: AddHistoryModalProps) {
-  console.log('??', selectedData);
   const {
     control,
     handleSubmit,
@@ -62,6 +61,7 @@ export default function HistoryAddModal({
   } = useForm<RowData>({
     resolver: zodResolver(formSchema),
   });
+  console.log('test', selectedData);
   const [selectId, setSeletedId] = useState<number>(selectedData?.id || 0);
 
   const { field: type } = useController({
@@ -138,26 +138,38 @@ export default function HistoryAddModal({
     }
   };
 
+  // 작성 중 모달 close하면 새로 입력한 데이터 초기화를 위해
+  const handleModalClose = () => {
+    reset();
+    handleClose();
+  };
+
   const initForm = () => {
-    if (selectedData) {
-      setSeletedId(selectedData.id || 0);
-      setValue('type', selectedData.type);
-      setValue('writer', selectedData.writer);
-      setValue('amount', selectedData.amount);
-      setValue('description', selectedData.description);
-      setValue('date', selectedData.date);
+    if (open) {
+      reset({
+        type: selectedData?.type || 'income',
+        writer: selectedData?.writer || '',
+        amount: selectedData?.amount || 0,
+        description: selectedData?.description || '',
+        date: selectedData?.date || String(today.toDate()),
+      });
+      setSeletedId(selectedData?.id || 0);
     }
   };
 
   useEffect(() => {
     initForm();
-  }, [selectedData]);
+  }, [open, selectedData]);
 
   return (
-    <Modal open={open} onClose={handleClose} aria-labelledby="add-income-modal">
+    <Modal
+      open={open}
+      onClose={handleModalClose}
+      aria-labelledby="add-income-modal"
+    >
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box className={styles.modalContainer}>
-          <IconButton className={styles.closeButton} onClick={handleClose}>
+          <IconButton className={styles.closeButton} onClick={handleModalClose}>
             <CloseIcon />
           </IconButton>
           <Typography variant="h5" gutterBottom>

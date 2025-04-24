@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Box, Button, CircularProgress, Typography } from '@mui/material';
+import { Box, Button, Skeleton } from '@mui/material';
 import HistoryGrid from '../components/grid/historyGrid';
 import DefaultLayout from '../components/layout/defaultLayout';
 import styles from './page.module.scss';
@@ -37,20 +37,25 @@ export default function List() {
           />
         </>
       ) : (
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-          height="300px"
-          textAlign="center"
-        >
-          {/* MUI 기본 스피너 */}
-          <CircularProgress size={40} />
+        <Box className={styles.contentWrapper}>
+          <Box className={styles.buttonWrapper}>
+            <Skeleton
+              variant="rounded"
+              width={88}
+              height={35}
+              animation="wave"
+            />
+          </Box>
 
-          <Typography variant="body1" mt={2}>
-            불러오는 중...
-          </Typography>
+          <Box className={styles.gridWrapper}>
+            <Skeleton
+              variant="rounded"
+              animation="wave"
+              width="100%"
+              height="100%"
+              className={styles.gridWrapper}
+            />
+          </Box>
         </Box>
       )}
     </DefaultLayout>
