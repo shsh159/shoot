@@ -6,7 +6,7 @@ import type { ColDef, CellClickedEvent } from 'ag-grid-community';
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 // Core CSS
 import { AgGridReact } from 'ag-grid-react';
-import HistoryAddModal from '../modal/historyAddModal';
+import HistoryAddModal from '../modal/HistoryAddModal';
 import { RowData } from '@/app/types';
 
 ModuleRegistry.registerModules([AllCommunityModule]);

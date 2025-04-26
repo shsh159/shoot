@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import DefaultLayout from './components/layout/defaultLayout';
+import DefaultLayout from './components/layout/DefaultLayout';
 
 export default function RootPage() {
   return (

@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { Box, Button, Skeleton } from '@mui/material';
-import HistoryGrid from '../components/grid/historyGrid';
-import DefaultLayout from '../components/layout/defaultLayout';
+import HistoryGrid from '../components/grid/HistoryGrid';
+import DefaultLayout from '../components/layout/DefaultLayout';
 import styles from './page.module.scss';
-import HistoryAddModal from '../components/modal/historyAddModal';
+import HistoryAddModal from '../components/modal/HistoryAddModal';
 import { useGetHistoryList } from '../api/history.quries';
 
 export default function List() {

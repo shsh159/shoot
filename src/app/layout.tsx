@@ -1,4 +1,4 @@
-import GlobalAlert from './components/alert/globalAlert';
+import GlobalAlert from './components/alert/GlobalAlert';
 import Providers from './provider';
 
 export const metadata = {
