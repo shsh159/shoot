@@ -3,8 +3,8 @@ import { fetchHistoryList } from './history.api';
 
 export const useGetHistoryList = () => {
   const { isLoading, data } = useQuery({
-    queryKey: ['FETCH_HISTORY_LIST'], // 쿼리 키
-    queryFn: fetchHistoryList, // 쿼리 함수
+    queryKey: ['FETCH_HISTORY_LIST'],
+    queryFn: fetchHistoryList,
   });
 
   return { isLoading, data };

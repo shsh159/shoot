@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { Box, Button, Skeleton } from '@mui/material';
-import HistoryGrid from '../components/grid/HistoryGrid';
-import DefaultLayout from '../components/layout/DefaultLayout';
+import HistoryGrid from '@components/grid/HistoryGrid';
+import DefaultLayout from '@components/layout/DefaultLayout';
 import styles from './page.module.scss';
-import HistoryAddModal from '../components/modal/HistoryAddModal';
-import { useGetHistoryList } from '../api/history.quries';
+import HistoryAddModal from '@components/modal/HistoryAddModal';
+import { useGetHistoryList } from '@api/history.quries';
 
 export default function List() {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
