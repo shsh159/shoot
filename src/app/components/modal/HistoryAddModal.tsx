@@ -24,7 +24,7 @@ import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { usePostHistoryAdd, usePutHistoryModify } from '@api/history.mutation';
 import { useAlertStore } from '@stores/useAlertStore';
-import { RowData } from '@types/history';
+import { RowData } from '@lib/types/history';
 
 interface AddHistoryModalProps {
   open: boolean;
