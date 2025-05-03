@@ -11,7 +11,7 @@ model history {
   id               Int       @id @default(autoincrement())
   writer           String    @db.VarChar(50)
   type             String    @db.VarChar(50)
-  amount           String    @db.VarChar(50)
+  amount           Int
   description      String?   @db.VarChar(500)
   target_date      String    @db.VarChar(50)
   create_date_time DateTime? @default(now()) @db.DateTime(0)
