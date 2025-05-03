@@ -1,6 +1,7 @@
 'use client';
 
 import { useGetHistoryMonth } from '@api/history.quries';
+import dayjs from 'dayjs';
 import dynamic from 'next/dynamic';
 
 const Chart = dynamic(() => import('@components/chart/Chart'), {
@@ -8,7 +9,7 @@ const Chart = dynamic(() => import('@components/chart/Chart'), {
 });
 
 export default function Client() {
-  const { data } = useGetHistoryMonth('2025-05');
-
-  return <Chart />;
+  const currentMonth = dayjs().format('YYYY-MM');
+  const { data } = useGetHistoryMonth(currentMonth);
+  return <Chart data={data} />;
 }

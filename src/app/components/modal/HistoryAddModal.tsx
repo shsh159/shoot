@@ -58,7 +58,6 @@ export default function HistoryAddModal({
   } = useForm<RowData>({
     resolver: zodResolver(formSchema),
   });
-  console.log('test', selectedData);
   const [selectId, setSeletedId] = useState<number>(selectedData?.id || 0);
 
   const { field: type } = useController({
