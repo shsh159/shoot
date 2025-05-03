@@ -25,7 +25,7 @@ export default function DefaultLayout({
 
   const drawer = (
     <Box className="drawer-content">
-      <Link href={''} className="link">
+      <Link href={'/dashboard'} className="link">
         <Typography variant="h6">대시보드</Typography>
       </Link>
       <Link href={'/list'} className="link">

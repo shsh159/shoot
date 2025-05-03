@@ -7,7 +7,7 @@ import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 // Core CSS
 import { AgGridReact } from 'ag-grid-react';
 import HistoryAddModal from '../modal/HistoryAddModal';
-import { RowData } from '@/app/types';
+import { RowData } from '@lib/types/history';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
