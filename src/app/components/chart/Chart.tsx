@@ -18,7 +18,7 @@ interface ChartProps {
 
 export default function Chart({ data }: ChartProps) {
   return (
-    <LineChart width={500} height={300} data={data}>
+    <LineChart width={1000} height={300} data={data}>
       <XAxis dataKey="date" />
       <YAxis />
       <Tooltip />

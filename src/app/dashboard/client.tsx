@@ -10,6 +10,6 @@ const Chart = dynamic(() => import('@components/chart/Chart'), {
 
 export default function Client() {
   const currentMonth = dayjs().format('YYYY-MM');
-  const { data } = useGetHistoryMonth(currentMonth);
+  const { data } = useGetHistoryMonth('2025-04');
   return <Chart data={data} />;
 }

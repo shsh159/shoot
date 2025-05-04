@@ -1,7 +1,7 @@
 const express = require('express');
 const prisma = require('./prismaClient');
 const cors = require('cors');
-const db = require('./config.js');
+const dayjs = require('dayjs');
 
 const app = express();
 const port = 4000;
@@ -98,7 +98,7 @@ app.get('/month', async (req, res) => {
       by: ['target_date'],
       where: {
         target_date: {
-          startsWith: month, // LIKE '2025-05%'
+          startsWith: month, // e.g., '2025-05'
         },
       },
       _sum: {
@@ -109,12 +109,47 @@ app.get('/month', async (req, res) => {
       },
     });
 
-    const formatted = result.map((row) => ({
-      date: row.target_date,
-      totalAmount: row._sum.amount ?? 0,
-    }));
+    // 📌 result를 Map으로 변환해서 빠르게 조회
+    const resultMap = new Map(
+      result.map((row) => [row.target_date, row._sum.amount ?? 0]),
+    );
 
+    // 📌 해당 월의 총 일 수 계산
+    const daysInMonth = dayjs(`${month}-01`).daysInMonth();
+
+    // 📌 1일부터 말일까지 모든 날짜 생성
+    const formatted = Array.from({ length: daysInMonth }, (_, i) => {
+      const day = i + 1;
+      const paddedDay = String(day).padStart(2, '0'); // '01' ~ '31'
+      const fullDate = `${month}-${paddedDay}`; // '2025-05-01' 등
+
+      return {
+        date: paddedDay, // 차트용 (x축)
+        totalAmount: resultMap.get(fullDate) ?? 0, // 데이터 있으면 금액, 없으면 0
+      };
+    });
     res.json(formatted);
+    // const result = await prisma.history.groupBy({
+    //   by: ['target_date'],
+    //   where: {
+    //     target_date: {
+    //       startsWith: month, // LIKE '2025-05%'
+    //     },
+    //   },
+    //   _sum: {
+    //     amount: true,
+    //   },
+    //   orderBy: {
+    //     target_date: 'asc',
+    //   },
+    // });
+
+    // const formatted = result.map((row) => ({
+    //   date: row.target_date.slice(-2),
+    //   totalAmount: row._sum.amount ?? 0,
+    // }));
+
+    // res.json(formatted);
   } catch (err) {
     console.error('Error fetching grouped data', err);
     res.status(500).send('DB 오류');
