@@ -7,6 +7,7 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
+  Legend,
 } from 'recharts';
 
 interface ChartProps {
@@ -21,6 +22,7 @@ export default function Chart({ data }: ChartProps) {
     <LineChart width={1000} height={300} data={data}>
       <XAxis dataKey="date" />
       <YAxis />
+      <Legend />
       <Tooltip />
       <CartesianGrid stroke="#eee" />
       <Line type="monotone" dataKey="totalAmount" stroke="#8884d8" />
