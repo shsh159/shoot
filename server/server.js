@@ -137,8 +137,16 @@ app.get('/month', async (req, res) => {
         currentAmount: resultMap.get(currDate) ?? 0,
       });
     }
+    const totals = mergedData.reduce(
+      (acc, item) => {
+        acc.prevTotal += item.prevAmount;
+        acc.currentTotal += item.currentAmount;
+        return acc;
+      },
+      { prevTotal: 0, currentTotal: 0 },
+    );
 
-    res.json({ amountList: mergedData });
+    res.json({ amountList: mergedData, totalAmount: totals });
   } catch (err) {
     console.error('Error fetching grouped data', err);
     res.status(500).send('DB 오류');
