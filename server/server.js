@@ -93,68 +93,106 @@ app.get('/month', async (req, res) => {
     return res.status(400).send('올바른 month 쿼리 파라미터가 필요합니다');
   }
 
+  const currentMonth = dayjs(`${month}-01`);
+  const prevMonth = currentMonth.subtract(1, 'month');
+  const currentMonthStr = currentMonth.format('YYYY-MM');
+  const prevMonthStr = prevMonth.format('YYYY-MM');
+
   try {
+    // 두 달 데이터 모두 포함해서 가져오기
     const result = await prisma.history.groupBy({
       by: ['target_date'],
       where: {
         target_date: {
-          startsWith: month, // e.g., '2025-05'
+          gte: `${prevMonthStr}-01`,
+          lt: `${currentMonth.add(1, 'month').format('YYYY-MM')}-01`,
         },
       },
       _sum: {
         amount: true,
       },
-      orderBy: {
-        target_date: 'asc',
-      },
     });
 
-    // 📌 result를 Map으로 변환해서 빠르게 조회
+    // Map 형태로 변환: { '2025-04-01' => amount, ... }
     const resultMap = new Map(
       result.map((row) => [row.target_date, row._sum.amount ?? 0]),
     );
 
-    // 📌 해당 월의 총 일 수 계산
-    const daysInMonth = dayjs(`${month}-01`).daysInMonth();
+    // 최대 일 수 계산 (28~31일)
+    const maxDays = Math.max(
+      currentMonth.daysInMonth(),
+      prevMonth.daysInMonth(),
+    );
 
-    // 📌 1일부터 말일까지 모든 날짜 생성
-    const formatted = Array.from({ length: daysInMonth }, (_, i) => {
-      const day = i + 1;
-      const paddedDay = String(day).padStart(2, '0'); // '01' ~ '31'
-      const fullDate = `${month}-${paddedDay}`; // '2025-05-01' 등
+    const mergedData = [];
 
-      return {
-        date: paddedDay, // 차트용 (x축)
-        totalAmount: resultMap.get(fullDate) ?? 0, // 데이터 있으면 금액, 없으면 0
-      };
-    });
-    res.json(formatted);
-    // const result = await prisma.history.groupBy({
-    //   by: ['target_date'],
-    //   where: {
-    //     target_date: {
-    //       startsWith: month, // LIKE '2025-05%'
-    //     },
-    //   },
-    //   _sum: {
-    //     amount: true,
-    //   },
-    //   orderBy: {
-    //     target_date: 'asc',
-    //   },
-    // });
+    for (let i = 1; i <= maxDays; i++) {
+      const day = String(i).padStart(2, '0');
+      const prevDate = `${prevMonthStr}-${day}`;
+      const currDate = `${currentMonthStr}-${day}`;
 
-    // const formatted = result.map((row) => ({
-    //   date: row.target_date.slice(-2),
-    //   totalAmount: row._sum.amount ?? 0,
-    // }));
+      mergedData.push({
+        date: day,
+        prevAmount: resultMap.get(prevDate) ?? 0,
+        currentAmount: resultMap.get(currDate) ?? 0,
+      });
+    }
 
-    // res.json(formatted);
+    res.json({ amountList: mergedData });
   } catch (err) {
     console.error('Error fetching grouped data', err);
     res.status(500).send('DB 오류');
   }
 });
+
+// app.get('/month', async (req, res) => {
+//   const { month } = req.query; // 예: 2025-05
+
+//   if (!month || typeof month !== 'string' || !/^\d{4}-\d{1,2}$/.test(month)) {
+//     return res.status(400).send('올바른 month 쿼리 파라미터가 필요합니다');
+//   }
+
+//   try {
+//     const result = await prisma.history.groupBy({
+//       by: ['target_date'],
+//       where: {
+//         target_date: {
+//           startsWith: month, // e.g., '2025-05'
+//         },
+//       },
+//       _sum: {
+//         amount: true,
+//       },
+//       orderBy: {
+//         target_date: 'asc',
+//       },
+//     });
+
+//     // 📌 result를 Map으로 변환해서 빠르게 조회
+//     const resultMap = new Map(
+//       result.map((row) => [row.target_date, row._sum.amount ?? 0]),
+//     );
+
+//     // 📌 해당 월의 총 일 수 계산
+//     const daysInMonth = dayjs(`${month}-01`).daysInMonth();
+
+//     // 📌 1일부터 말일까지 모든 날짜 생성
+//     const formatted = Array.from({ length: daysInMonth }, (_, i) => {
+//       const day = i + 1;
+//       const paddedDay = String(day).padStart(2, '0'); // '01' ~ '31'
+//       const fullDate = `${month}-${paddedDay}`; // '2025-05-01' 등
+
+//       return {
+//         date: paddedDay, // 차트용 (x축)
+//         totalAmount: resultMap.get(fullDate) ?? 0, // 데이터 있으면 금액, 없으면 0
+//       };
+//     });
+//     res.json(formatted);
+//   } catch (err) {
+//     console.error('Error fetching grouped data', err);
+//     res.status(500).send('DB 오류');
+//   }
+// });
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
