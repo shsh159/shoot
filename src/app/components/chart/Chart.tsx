@@ -35,7 +35,7 @@ export default function Chart({ amountList }: ChartProps) {
       <Line
         type="monotone"
         dataKey="currentAmount"
-        name="현재 달"
+        name="이번 달"
         stroke="#8884d8" // 보라색 계열
       />
     </LineChart>

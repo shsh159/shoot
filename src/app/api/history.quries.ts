@@ -7,6 +7,10 @@ interface ChartProps {
     prevAmount: number;
     currentAmount: number;
   }[];
+  totalAmount: {
+    prevTotal: number;
+    currentTotal: number;
+  };
 }
 
 export const useGetHistoryList = () => {
