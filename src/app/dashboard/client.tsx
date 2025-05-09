@@ -1,7 +1,7 @@
 'use client';
 
 import { useGetHistoryMonth } from '@api/history.quries';
-import Card from '@components/card/Card';
+import CardComponent from '@components/card/Card';
 import { Box } from '@mui/material';
 import dayjs from 'dayjs';
 import dynamic from 'next/dynamic';
@@ -15,9 +15,9 @@ export default function Client() {
   const { data } = useGetHistoryMonth(currentMonth);
 
   return (
-    <Box display="flex" gap={2}>
+    <Box display="flex" gap={2} sx={{ height: '400px' }}>
       <Chart amountList={data?.amountList ?? []} />
-      {data?.totalAmount && <Card totalAmount={data.totalAmount} />}
+      {data?.totalAmount && <CardComponent totalAmount={data.totalAmount} />}
     </Box>
   );
 }
