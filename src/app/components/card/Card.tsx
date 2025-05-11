@@ -1,4 +1,6 @@
-import { Box, CardContent, Typography, Card } from '@mui/material';
+import { CardContent, Typography, Card } from '@mui/material';
+import CloudIcon from '@mui/icons-material/Cloud';
+import LightModeIcon from '@mui/icons-material/LightMode';
 
 interface totalAmountProps {
   totalAmount: {
@@ -32,6 +34,13 @@ export default function CardComponent({ totalAmount }: totalAmountProps) {
               100,
           )} %`}
         </Typography>
+      </CardContent>
+      <CardContent>
+        {totalAmount?.currentTotal <= totalAmount?.prevTotal ? (
+          <LightModeIcon fontSize="large" />
+        ) : (
+          <CloudIcon fontSize="large" />
+        )}
       </CardContent>
     </Card>
   );

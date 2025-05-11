@@ -107,13 +107,13 @@ app.get('/month', async (req, res) => {
           gte: `${prevMonthStr}-01`,
           lt: `${currentMonth.add(1, 'month').format('YYYY-MM')}-01`,
         },
+        type: 'expense',
       },
       _sum: {
         amount: true,
       },
     });
 
-    // Map 형태로 변환: { '2025-04-01' => amount, ... }
     const resultMap = new Map(
       result.map((row) => [row.target_date, row._sum.amount ?? 0]),
     );
@@ -153,54 +153,48 @@ app.get('/month', async (req, res) => {
   }
 });
 
-// app.get('/month', async (req, res) => {
-//   const { month } = req.query; // 예: 2025-05
+app.get('/year', async (req, res) => {
+  const currentYear = dayjs().year(); // 현재 연도 (예: 2025)
 
-//   if (!month || typeof month !== 'string' || !/^\d{4}-\d{1,2}$/.test(month)) {
-//     return res.status(400).send('올바른 month 쿼리 파라미터가 필요합니다');
-//   }
+  try {
+    const result = await prisma.history.groupBy({
+      by: ['target_date'],
+      where: {
+        target_date: {
+          gte: `${currentYear}-01-01`,
+          lt: `${currentYear + 1}-01-01`, // 다음 해 1월 1일 전까지
+        },
+        type: 'expense',
+      },
+      _sum: {
+        amount: true,
+      },
+    });
 
-//   try {
-//     const result = await prisma.history.groupBy({
-//       by: ['target_date'],
-//       where: {
-//         target_date: {
-//           startsWith: month, // e.g., '2025-05'
-//         },
-//       },
-//       _sum: {
-//         amount: true,
-//       },
-//       orderBy: {
-//         target_date: 'asc',
-//       },
-//     });
+    // 월별 합계로 변환
+    const monthlyMap = new Map();
 
-//     // 📌 result를 Map으로 변환해서 빠르게 조회
-//     const resultMap = new Map(
-//       result.map((row) => [row.target_date, row._sum.amount ?? 0]),
-//     );
+    for (const row of result) {
+      const monthStr = dayjs(row.target_date).format('YYYY-MM');
+      const prevAmount = monthlyMap.get(monthStr) ?? 0;
+      monthlyMap.set(monthStr, prevAmount + (row._sum.amount ?? 0));
+    }
 
-//     // 📌 해당 월의 총 일 수 계산
-//     const daysInMonth = dayjs(`${month}-01`).daysInMonth();
+    // 1월부터 12월까지 데이터 구성
+    const monthlyExpenses = Array.from({ length: 12 }, (_, i) => {
+      const month = `${currentYear}-${String(i + 1).padStart(2, '0')}`;
+      return {
+        month,
+        amount: monthlyMap.get(month) ?? 0,
+      };
+    });
 
-//     // 📌 1일부터 말일까지 모든 날짜 생성
-//     const formatted = Array.from({ length: daysInMonth }, (_, i) => {
-//       const day = i + 1;
-//       const paddedDay = String(day).padStart(2, '0'); // '01' ~ '31'
-//       const fullDate = `${month}-${paddedDay}`; // '2025-05-01' 등
-
-//       return {
-//         date: paddedDay, // 차트용 (x축)
-//         totalAmount: resultMap.get(fullDate) ?? 0, // 데이터 있으면 금액, 없으면 0
-//       };
-//     });
-//     res.json(formatted);
-//   } catch (err) {
-//     console.error('Error fetching grouped data', err);
-//     res.status(500).send('DB 오류');
-//   }
-// });
+    res.json({ year: currentYear, monthlyExpenses });
+  } catch (err) {
+    console.error('Error fetching yearly data', err);
+    res.status(500).send('DB 오류');
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
