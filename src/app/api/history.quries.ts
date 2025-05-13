@@ -1,5 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchHistoryList, fetchMonthAmount } from './history.api';
+import {
+  fetchHistoryList,
+  fetchMonthAmount,
+  fetchYearAmount,
+} from './history.api';
 
 interface ChartProps {
   amountList: {
@@ -11,6 +15,13 @@ interface ChartProps {
     prevTotal: number;
     currentTotal: number;
   };
+}
+
+interface YearChartProps {
+  amountList: {
+    month: string;
+    amount: number;
+  }[];
 }
 
 export const useGetHistoryList = () => {
@@ -26,6 +37,15 @@ export const useGetHistoryMonth = (targetMonth: string) => {
   const { isLoading, data } = useQuery<ChartProps>({
     queryKey: ['FETCH_HISTORY_MONTH', targetMonth],
     queryFn: () => fetchMonthAmount(targetMonth),
+  });
+
+  return { isLoading, data };
+};
+
+export const useGetHistoryYear = () => {
+  const { isLoading, data } = useQuery<YearChartProps>({
+    queryKey: ['FETCH_HISTORY_YEAR'],
+    queryFn: () => fetchYearAmount(),
   });
 
   return { isLoading, data };

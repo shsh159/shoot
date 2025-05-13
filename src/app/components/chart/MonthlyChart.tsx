@@ -18,9 +18,9 @@ interface ChartProps {
   }[];
 }
 
-export default function Chart({ amountList }: ChartProps) {
+export default function MonthlyChart({ amountList }: ChartProps) {
   return (
-    <LineChart width={950} height={400} data={amountList}>
+    <LineChart width={950} height={380} data={amountList}>
       <XAxis dataKey="date" />
       <YAxis />
       <Legend />
@@ -30,13 +30,13 @@ export default function Chart({ amountList }: ChartProps) {
         type="monotone"
         dataKey="prevAmount"
         name="이전 달"
-        stroke="#82ca9d" // 녹색 계열
+        stroke="#82ca9d"
       />
       <Line
         type="monotone"
         dataKey="currentAmount"
         name="이번 달"
-        stroke="#8884d8" // 보라색 계열
+        stroke="#8884d8"
       />
     </LineChart>
   );

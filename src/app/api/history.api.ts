@@ -23,3 +23,8 @@ export const fetchMonthAmount = async (targetMonth: string) => {
   });
   return response.data;
 };
+
+export const fetchYearAmount = async () => {
+  const response = await axios.get(`${baseUrl}/year`);
+  return response.data;
+};

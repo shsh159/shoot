@@ -189,7 +189,7 @@ app.get('/year', async (req, res) => {
       };
     });
 
-    res.json({ year: currentYear, monthlyExpenses });
+    res.json({ amountList: monthlyExpenses });
   } catch (err) {
     console.error('Error fetching yearly data', err);
     res.status(500).send('DB 오류');
