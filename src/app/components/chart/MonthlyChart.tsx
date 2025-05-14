@@ -1,5 +1,6 @@
 'use client';
 
+import { MonthChart } from '@lib/types/chart';
 import {
   LineChart,
   Line,
@@ -10,15 +11,9 @@ import {
   Legend,
 } from 'recharts';
 
-interface ChartProps {
-  amountList: {
-    date: string;
-    prevAmount: number;
-    currentAmount: number;
-  }[];
-}
+type MonthlyChartProps = Pick<MonthChart, 'amountList'>;
 
-export default function MonthlyChart({ amountList }: ChartProps) {
+export default function MonthlyChart({ amountList }: MonthlyChartProps) {
   return (
     <LineChart width={950} height={380} data={amountList}>
       <XAxis dataKey="date" />

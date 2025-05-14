@@ -4,25 +4,7 @@ import {
   fetchMonthAmount,
   fetchYearAmount,
 } from './history.api';
-
-interface ChartProps {
-  amountList: {
-    date: string;
-    prevAmount: number;
-    currentAmount: number;
-  }[];
-  totalAmount: {
-    prevTotal: number;
-    currentTotal: number;
-  };
-}
-
-interface YearChartProps {
-  amountList: {
-    month: string;
-    amount: number;
-  }[];
-}
+import { MonthChart, YearChart } from '@lib/types/chart';
 
 export const useGetHistoryList = () => {
   const { isLoading, data } = useQuery({
@@ -34,7 +16,7 @@ export const useGetHistoryList = () => {
 };
 
 export const useGetHistoryMonth = (targetMonth: string) => {
-  const { isLoading, data } = useQuery<ChartProps>({
+  const { isLoading, data } = useQuery<MonthChart>({
     queryKey: ['FETCH_HISTORY_MONTH', targetMonth],
     queryFn: () => fetchMonthAmount(targetMonth),
   });
@@ -43,7 +25,7 @@ export const useGetHistoryMonth = (targetMonth: string) => {
 };
 
 export const useGetHistoryYear = () => {
-  const { isLoading, data } = useQuery<YearChartProps>({
+  const { isLoading, data } = useQuery<YearChart>({
     queryKey: ['FETCH_HISTORY_YEAR'],
     queryFn: () => fetchYearAmount(),
   });

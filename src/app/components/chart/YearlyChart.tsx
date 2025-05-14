@@ -1,5 +1,6 @@
 'use client';
 
+import { YearChart } from '@lib/types/chart';
 import {
   LineChart,
   Line,
@@ -9,14 +10,7 @@ import {
   CartesianGrid,
 } from 'recharts';
 
-interface ChartProps {
-  amountList: {
-    month: string;
-    amount: number;
-  }[];
-}
-
-export default function YearlyChart({ amountList }: ChartProps) {
+export default function YearlyChart({ amountList }: YearChart) {
   return (
     <LineChart width={1250} height={380} data={amountList}>
       <XAxis dataKey="month" />

@@ -1,15 +1,13 @@
 import { CardContent, Typography, Card } from '@mui/material';
 import CloudIcon from '@mui/icons-material/Cloud';
 import LightModeIcon from '@mui/icons-material/LightMode';
+import { TotalAmount } from '@lib/types/chart';
 
-interface totalAmountProps {
-  totalAmount: {
-    prevTotal: number;
-    currentTotal: number;
-  };
+interface TotalAmountProps {
+  totalAmount: TotalAmount;
 }
 
-export default function CardComponent({ totalAmount }: totalAmountProps) {
+export default function CardComponent({ totalAmount }: TotalAmountProps) {
   return (
     <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <CardContent>
