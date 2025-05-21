@@ -2,16 +2,10 @@
 
 import { useGetHistoryMonth, useGetHistoryYear } from '@api/history.quries';
 import CardComponent from '@components/card/Card';
+import MonthlyChart from '@components/chart/MonthlyChart';
+import YearlyChart from '@components/chart/YearlyChart';
 import { Box, Skeleton } from '@mui/material';
 import dayjs from 'dayjs';
-import dynamic from 'next/dynamic';
-
-const MonthlyChart = dynamic(() => import('@components/chart/MonthlyChart'), {
-  ssr: false,
-});
-const YearlyChart = dynamic(() => import('@components/chart/YearlyChart'), {
-  ssr: false,
-});
 
 export default function Client() {
   const currentMonth = dayjs().format('YYYY-MM');
