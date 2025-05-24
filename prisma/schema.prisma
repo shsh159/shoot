@@ -17,3 +17,14 @@ model history {
   create_date_time DateTime? @default(now()) @db.DateTime(0)
   update_date_time DateTime? @db.DateTime(0)
 }
+
+model member {
+  id               Int       @id @default(autoincrement())
+  user_id          String    @unique(map: "user_id") @db.VarChar(50)
+  user_password    String    @db.VarChar(255)
+  user_name        String    @db.VarChar(20)
+  phone_number     String?   @db.VarChar(20)
+  email            String?   @db.VarChar(200)
+  create_date_time DateTime? @default(now()) @db.DateTime(0)
+  update_date_time DateTime? @db.DateTime(0)
+}
