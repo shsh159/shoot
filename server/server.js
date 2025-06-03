@@ -2,6 +2,7 @@ const express = require('express');
 const prisma = require('./prismaClient');
 const cors = require('cors');
 const dayjs = require('dayjs');
+const bcrypt = require('bcrypt');
 
 const app = express();
 const port = 4000;
@@ -12,6 +13,49 @@ app.use(
     origin: 'http://localhost:3000', // 허용할 출처
   }),
 );
+
+// 로그인 라우트
+app.post('/auth/login', async (req, res) => {
+  const { userId, userPassword } = req.body;
+
+  if (!userId || !userPassword) {
+    return res
+      .status(400)
+      .json({ message: '아이디와 비밀번호를 입력해주세요.' });
+  }
+
+  try {
+    const user = await prisma.member.findUnique({
+      where: { user_id: userId },
+    });
+
+    if (!user) {
+      return res.status(401).json({ message: '존재하지 않는 사용자입니다.' });
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(
+      userPassword,
+      user.user_password,
+    );
+
+    if (!isPasswordCorrect) {
+      return res.status(401).json({ message: '비밀번호가 일치하지 않습니다.' });
+    }
+
+    // 여기서 토큰을 생성하거나 세션 로직을 추가할 수 있음 (ex: JWT, next-auth 연동 등)
+    return res.json({
+      message: '로그인 성공',
+      user: {
+        id: user.id,
+        userId: user.user_id,
+        userName: user.user_name,
+      },
+    });
+  } catch (err) {
+    console.error('로그인 오류:', err);
+    return res.status(500).json({ message: '서버 오류' });
+  }
+});
 
 app.get('/list', async (req, res) => {
   try {

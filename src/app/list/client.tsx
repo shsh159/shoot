@@ -1,6 +1,6 @@
 'use client';
 
-import { useGetHistoryList } from '@api/history.quries';
+import { useGetHistoryList } from '@api/history/history.quries';
 import { Box, Button, Skeleton } from '@mui/material';
 import { useState } from 'react';
 import styles from './client.module.scss';

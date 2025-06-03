@@ -1,6 +1,9 @@
 'use client';
 
-import { useGetHistoryMonth, useGetHistoryYear } from '@api/history.quries';
+import {
+  useGetHistoryMonth,
+  useGetHistoryYear,
+} from '@api/history/history.quries';
 import CardComponent from '@components/card/Card';
 import MonthlyChart from '@components/chart/MonthlyChart';
 import YearlyChart from '@components/chart/YearlyChart';

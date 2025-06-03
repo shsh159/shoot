@@ -22,7 +22,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import { usePostHistoryAdd, usePutHistoryModify } from '@api/history.mutation';
+import {
+  usePostHistoryAdd,
+  usePutHistoryModify,
+} from '@api/history/history.mutation';
 import { useAlertStore } from '@stores/useAlertStore';
 import { RowData } from '@lib/types/history';
 
