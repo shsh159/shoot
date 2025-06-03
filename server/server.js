@@ -3,18 +3,41 @@ const prisma = require('./prismaClient');
 const cors = require('cors');
 const dayjs = require('dayjs');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const SECRET_KEY = process.env.JWT_SECRET || 'your-secret-key';
 
 const app = express();
 const port = 4000;
+
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 app.use(express.json());
 app.use(
   cors({
     origin: 'http://localhost:3000', // 허용할 출처
+    credentials: true,
   }),
 );
 
-// 로그인 라우트
+const verifyToken = (req, res, next) => {
+  const token = req.cookies.token;
+
+  if (!token) {
+    return res
+      .status(401)
+      .json({ message: '토큰이 없습니다. 로그인 해주세요.' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    req.user = decoded; // 필요 시 req.user.id 등 사용 가능
+    next();
+  } catch (err) {
+    return res.status(403).json({ message: '유효하지 않은 토큰입니다.' });
+  }
+};
+
 app.post('/auth/login', async (req, res) => {
   const { userId, userPassword } = req.body;
 
@@ -42,7 +65,17 @@ app.post('/auth/login', async (req, res) => {
       return res.status(401).json({ message: '비밀번호가 일치하지 않습니다.' });
     }
 
-    // 여기서 토큰을 생성하거나 세션 로직을 추가할 수 있음 (ex: JWT, next-auth 연동 등)
+    const token = jwt.sign({ id: user.id, userId: user.user_id }, SECRET_KEY, {
+      expiresIn: '1h',
+    });
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 1000,
+    });
+
     return res.json({
       message: '로그인 성공',
       user: {
@@ -57,7 +90,12 @@ app.post('/auth/login', async (req, res) => {
   }
 });
 
-app.get('/list', async (req, res) => {
+app.post('/auth/logout', (req, res) => {
+  res.clearCookie('token');
+  res.json({ message: '로그아웃 되었습니다.' });
+});
+
+app.get('/list', verifyToken, async (req, res) => {
   try {
     const result = await prisma.history.findMany({
       orderBy: [{ target_date: 'desc' }, { create_date_time: 'desc' }],
@@ -77,7 +115,7 @@ app.get('/list', async (req, res) => {
   }
 });
 
-app.post('/add', async (req, res) => {
+app.post('/add', verifyToken, async (req, res) => {
   const { writer, type, amount, description, date } = req.body;
 
   if (!writer || !amount || !description) {
@@ -103,7 +141,7 @@ app.post('/add', async (req, res) => {
   }
 });
 
-app.put('/update', async (req, res) => {
+app.put('/update', verifyToken, async (req, res) => {
   const { id, writer, type, amount, description, date } = req.body;
 
   if (!writer || !amount || !description) {
@@ -130,7 +168,7 @@ app.put('/update', async (req, res) => {
   }
 });
 
-app.get('/month', async (req, res) => {
+app.get('/month', verifyToken, async (req, res) => {
   const { month } = req.query; // 예: 2025-05
 
   if (!month || typeof month !== 'string' || !/^\d{4}-\d{1,2}$/.test(month)) {
@@ -197,7 +235,7 @@ app.get('/month', async (req, res) => {
   }
 });
 
-app.get('/year', async (req, res) => {
+app.get('/year', verifyToken, async (req, res) => {
   const currentYear = dayjs().year(); // 현재 연도 (예: 2025)
 
   try {
