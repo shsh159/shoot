@@ -1,5 +1,7 @@
+import GlobalSpinner from '@components/GlobalSpinner';
 import GlobalAlert from './components/alert/GlobalAlert';
 import Providers from './provider';
+import RouteChangeHandler from '@components/RouteChangeHandler';
 
 export const metadata = {
   title: 'Next.js',
@@ -16,6 +18,8 @@ export default function RootLayout({
       <body>
         <Providers>{children}</Providers>
         <GlobalAlert />
+        <GlobalSpinner />
+        <RouteChangeHandler />
       </body>
     </html>
   );
