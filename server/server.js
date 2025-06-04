@@ -73,7 +73,7 @@ app.post('/auth/login', async (req, res) => {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',
-      maxAge: 60,
+      maxAge: 60 * 60 * 1000,
     });
 
     return res.json({

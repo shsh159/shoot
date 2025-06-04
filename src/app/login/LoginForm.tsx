@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { LoginForm } from '@lib/types/login';
 import { useLoginUser } from '@api/login/login.mutation';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   userId: z.string().min(1, { message: '아이디를 입력해 주세요.' }),
@@ -33,11 +34,17 @@ export default function LoginPage() {
     defaultValue: '',
   });
 
+  const router = useRouter();
+
   const { mutate } = useLoginUser();
 
   const onSubmit = (data: LoginForm) => {
     console.log('내역:', data);
-    mutate(data);
+    mutate(data, {
+      onSuccess: () => {
+        router.push('/list');
+      },
+    });
   };
 
   return (
