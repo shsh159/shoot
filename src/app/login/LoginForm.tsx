@@ -74,8 +74,8 @@ export default function LoginPage() {
               variant="outlined"
               margin="normal"
               fullWidth
-              type="text"
               error={!!errors.userId}
+              helperText={errors.userId?.message}
             />
             <TextField
               {...userPassword}
@@ -85,6 +85,7 @@ export default function LoginPage() {
               fullWidth
               type="password"
               error={!!errors.userPassword}
+              helperText={errors.userPassword?.message}
             />
 
             <Button
