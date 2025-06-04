@@ -16,6 +16,10 @@ model history {
   target_date      String    @db.VarChar(50)
   create_date_time DateTime? @default(now()) @db.DateTime(0)
   update_date_time DateTime? @db.DateTime(0)
+  category_id      Int?
+  category         category? @relation(fields: [category_id], references: [id], map: "fk_history_category")
+
+  @@index([category_id], map: "fk_history_category")
 }
 
 model member {
@@ -27,4 +31,12 @@ model member {
   email            String?   @db.VarChar(200)
   create_date_time DateTime? @default(now()) @db.DateTime(0)
   update_date_time DateTime? @db.DateTime(0)
+}
+
+model category {
+  id               Int       @id @default(autoincrement())
+  name             String    @unique(map: "uk_category_name") @db.VarChar(100)
+  create_date_time DateTime? @default(now()) @db.DateTime(0)
+  update_date_time DateTime? @db.DateTime(0)
+  history          history[]
 }
