@@ -7,6 +7,8 @@ import { z } from 'zod';
 import { LoginForm } from '@lib/types/login';
 import { useLoginUser } from '@api/login/login.mutation';
 import { useRouter } from 'next/navigation';
+import { useAlertStore } from '@stores/useAlertStore';
+import { useLoadingStore } from '@stores/useLoadingStore';
 
 const formSchema = z.object({
   userId: z.string().min(1, { message: '아이디를 입력해 주세요.' }),
@@ -35,14 +37,21 @@ export default function LoginPage() {
   });
 
   const router = useRouter();
+  const setLoading = useLoadingStore((state) => state.setLoading);
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   const { mutate } = useLoginUser();
 
   const onSubmit = (data: LoginForm) => {
-    console.log('내역:', data);
+    setLoading(true);
     mutate(data, {
       onSuccess: () => {
         router.push('/list');
+        setTimeout(() => setLoading(false), 500);
+      },
+      onError: (error) => {
+        setTimeout(() => setLoading(false), 500);
+        showAlert('error', error.response.data.message);
       },
     });
   };
