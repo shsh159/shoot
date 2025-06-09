@@ -44,7 +44,7 @@ const formSchema = z.object({
   amount: z.coerce.number().min(1, { message: '금액을 입력해 주세요.' }),
   description: z.string().min(1, { message: '설명을 입력해 주세요.' }),
   date: z.string().min(1, { message: '날짜를 선택해 주세요.' }),
-  categoryId: z.number().min(1, { message: '카테고리를 선택해 주세요.' }),
+  categoryId: z.number().min(1, { message: '항목을 선택해 주세요.' }),
 });
 
 export default function HistoryAddModal({
@@ -194,11 +194,11 @@ export default function HistoryAddModal({
               )}
 
               <FormControl fullWidth margin="normal">
-                <InputLabel id="category-select-label">구분</InputLabel>
+                <InputLabel id="category-select-label">항목</InputLabel>
                 <Select
                   {...categoryId}
                   labelId="category-select-label"
-                  label="카테고리"
+                  label="항목"
                   defaultValue={selectedData?.categoryId || data[0].id}
                 >
                   {data &&

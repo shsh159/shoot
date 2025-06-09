@@ -21,13 +21,13 @@ export default function HistoryGrid({
 
   // Column Definitions
   const [colDefs] = useState<ColDef<RowData>[]>([
-    { field: 'no', width: 70 },
-    { field: 'description', flex: 1 },
-    { field: 'amount', width: 120 },
-    { field: 'date', width: 140 },
-    { field: 'writer', width: 120 },
-    { field: 'type', width: 100 },
-    { field: 'categoryName', width: 120 },
+    { field: 'no', width: 70, headerName: '순서' },
+    { field: 'description', flex: 1, headerName: '설명' },
+    { field: 'amount', width: 120, headerName: '금액' },
+    { field: 'date', width: 140, headerName: '날짜' },
+    { field: 'writer', width: 120, headerName: '이름' },
+    { field: 'type', width: 100, headerName: '지출/수입' },
+    { field: 'categoryName', width: 120, headerName: '항목' },
   ]);
 
   // 모달 상태 및 선택된 row 데이터
