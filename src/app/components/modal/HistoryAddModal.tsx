@@ -4,13 +4,11 @@ import {
   Typography,
   Box,
   Modal,
-  IconButton,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
 import styles from './historyAddModal.module.scss';
 import dayjs from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -28,6 +26,7 @@ import {
 } from '@api/history/history.mutation';
 import { useAlertStore } from '@stores/useAlertStore';
 import { RowData } from '@lib/types/history';
+import { useGetCategoryList } from '@api/category/category.queries';
 
 interface AddHistoryModalProps {
   open: boolean;
@@ -45,6 +44,7 @@ const formSchema = z.object({
   amount: z.coerce.number().min(1, { message: '금액을 입력해 주세요.' }),
   description: z.string().min(1, { message: '설명을 입력해 주세요.' }),
   date: z.string().min(1, { message: '날짜를 선택해 주세요.' }),
+  categoryId: z.number().min(1, { message: '카테고리를 선택해 주세요.' }),
 });
 
 export default function HistoryAddModal({
@@ -93,13 +93,20 @@ export default function HistoryAddModal({
     defaultValue: selectedData?.date ? selectedData.date : String(today.toDate),
   });
 
+  const { field: categoryId } = useController({
+    name: 'categoryId',
+    control,
+    defaultValue: selectedData?.categoryId ? selectedData.categoryId : 1,
+  });
+
   const { mutate: addHistory } = usePostHistoryAdd();
   const { mutate: modifyHistory } = usePutHistoryModify();
 
   const showAlert = useAlertStore((state) => state.showAlert);
 
+  const { data, isLoading } = useGetCategoryList();
+
   const onSubmit: SubmitHandler<RowData> = async (data: RowData) => {
-    console.log('내역:', data);
     const transformedData = {
       id: selectId,
       writer: data.writer,
@@ -107,6 +114,7 @@ export default function HistoryAddModal({
       amount: data.amount,
       description: data.description,
       date: format(data.date, 'yyyy-MM-dd'),
+      categoryId: data.categoryId,
     };
     try {
       if (transformedData.id < 1) {
@@ -151,6 +159,7 @@ export default function HistoryAddModal({
         amount: selectedData?.amount || 0,
         description: selectedData?.description || '',
         date: selectedData?.date || String(today.toDate()),
+        categoryId: selectedData?.categoryId,
       });
       setSeletedId(selectedData?.id || 0);
     }
@@ -161,78 +170,99 @@ export default function HistoryAddModal({
   }, [open, selectedData]);
 
   return (
-    <Modal
-      open={open}
-      onClose={handleModalClose}
-      aria-labelledby="add-income-modal"
-    >
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Box className={styles.modalContainer}>
-          <IconButton className={styles.closeButton} onClick={handleModalClose}>
-            <CloseIcon />
-          </IconButton>
-          <Typography variant="h5" gutterBottom>
-            {selectedData ? '내역 수정' : '내역 추가'}
-          </Typography>
-          <FormControl fullWidth>
-            <InputLabel id="type-select-label">구분</InputLabel>
-            <Select {...type} labelId="type-select-label" label="구분">
-              <MenuItem value={'income'}>입금</MenuItem>
-              <MenuItem value={'expense'}>출금</MenuItem>
-            </Select>
-          </FormControl>
-          {errors.type && (
-            <Typography color="error">{errors.type.message}</Typography>
-          )}
+    <>
+      {!isLoading && (
+        <Modal
+          open={open}
+          onClose={handleModalClose}
+          aria-labelledby="add-income-modal"
+        >
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Box className={styles.modalContainer}>
+              <Typography variant="h5" gutterBottom>
+                {selectedData ? '내역 수정' : '내역 추가'}
+              </Typography>
+              <FormControl fullWidth>
+                <InputLabel id="type-select-label">구분</InputLabel>
+                <Select {...type} labelId="type-select-label" label="구분">
+                  <MenuItem value={'income'}>입금</MenuItem>
+                  <MenuItem value={'expense'}>출금</MenuItem>
+                </Select>
+              </FormControl>
+              {errors.type && (
+                <Typography color="error">{errors.type.message}</Typography>
+              )}
 
-          <TextField
-            {...writer}
-            label="누구?"
-            fullWidth
-            margin="normal"
-            error={!!errors.writer}
-            helperText={errors.writer?.message}
-          />
+              <FormControl fullWidth margin="normal">
+                <InputLabel id="category-select-label">구분</InputLabel>
+                <Select
+                  {...categoryId}
+                  labelId="category-select-label"
+                  label="카테고리"
+                  defaultValue={selectedData?.categoryId || data[0].id}
+                >
+                  {data &&
+                    data?.map((item: any, index: number) => (
+                      <MenuItem key={`category-${index}`} value={item?.id}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
 
-          <TextField
-            {...amount}
-            label="금액"
-            type="number"
-            fullWidth
-            margin="normal"
-            error={!!errors.amount}
-            helperText={errors.amount?.message}
-          />
+              <TextField
+                {...writer}
+                label="누구?"
+                fullWidth
+                margin="normal"
+                error={!!errors.writer}
+                helperText={errors.writer?.message}
+              />
 
-          <TextField
-            {...description}
-            label="설명"
-            fullWidth
-            margin="normal"
-            error={!!errors.description}
-            helperText={errors.description?.message}
-          />
+              <TextField
+                {...amount}
+                label="금액"
+                type="number"
+                fullWidth
+                margin="normal"
+                error={!!errors.amount}
+                helperText={errors.amount?.message}
+              />
 
-          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
-            <DatePicker
-              value={dayjs(date.value)}
-              label="날짜"
-              onChange={(newValue) => setValue('date', String(newValue))}
-              views={['year', 'month', 'day']}
-            />
-          </LocalizationProvider>
+              <TextField
+                {...description}
+                label="설명"
+                fullWidth
+                margin="normal"
+                error={!!errors.description}
+                helperText={errors.description?.message}
+              />
 
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ mt: 2 }}
-          >
-            {selectedData ? '수정하기' : '추가하기'}
-          </Button>
-        </Box>
-      </form>
-    </Modal>
+              <LocalizationProvider
+                dateAdapter={AdapterDayjs}
+                adapterLocale="ko"
+              >
+                <DatePicker
+                  value={dayjs(date.value)}
+                  label="날짜"
+                  onChange={(newValue) => setValue('date', String(newValue))}
+                  views={['year', 'month', 'day']}
+                />
+              </LocalizationProvider>
+
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                sx={{ mt: 2 }}
+              >
+                {selectedData ? '수정하기' : '추가하기'}
+              </Button>
+            </Box>
+          </form>
+        </Modal>
+      )}
+    </>
   );
 }

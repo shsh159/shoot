@@ -4,7 +4,7 @@ const cors = require('cors');
 const dayjs = require('dayjs');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = process.env.JWT_SECRET || 'your-secret-key';
+const SECRET_KEY = process.env.JWT_SECRET;
 
 const app = express();
 const port = 4000;
@@ -99,14 +99,26 @@ app.get('/list', verifyToken, async (req, res) => {
   try {
     const result = await prisma.history.findMany({
       orderBy: [{ target_date: 'desc' }, { create_date_time: 'desc' }],
+      include: {
+        category: {
+          select: {
+            name: true, // category 테이블의 name 컬럼만 포함
+          },
+        },
+      },
     });
 
-    // ROW NUMBER
-    const formatted = result.map((row, index) => ({
-      no: index + 1,
-      ...row,
-      date: row.target_date,
-    }));
+    // ROW NUMBER + 날짜 포맷 + category.name 추가
+    const formatted = result.map((row, index) => {
+      const { category, category_id, ...rest } = row; // category 필드 제거
+      return {
+        no: index + 1,
+        ...rest,
+        date: row.target_date,
+        categoryId: row?.category_id || null,
+        categoryName: category?.name || null,
+      };
+    });
 
     res.json(formatted);
   } catch (err) {
@@ -115,8 +127,25 @@ app.get('/list', verifyToken, async (req, res) => {
   }
 });
 
+app.get('/category/list', verifyToken, async (req, res) => {
+  try {
+    const result = await prisma.category.findMany({
+      orderBy: [{ id: 'asc' }],
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    res.json(result);
+  } catch (err) {
+    console.error('Error fetching category', err);
+    res.status(500).send('DB 오류');
+  }
+});
+
 app.post('/add', verifyToken, async (req, res) => {
-  const { writer, type, amount, description, date } = req.body;
+  const { writer, type, amount, description, date, categoryId } = req.body;
 
   if (!writer || !amount || !description) {
     return res.status(400).json({ message: '필수 입력 필드를 확인해주세요.' });
@@ -131,6 +160,7 @@ app.post('/add', verifyToken, async (req, res) => {
         description,
         target_date: date,
         create_date_time: new Date(),
+        category_id: categoryId,
       },
     });
 
@@ -142,7 +172,7 @@ app.post('/add', verifyToken, async (req, res) => {
 });
 
 app.put('/update', verifyToken, async (req, res) => {
-  const { id, writer, type, amount, description, date } = req.body;
+  const { id, writer, type, amount, description, date, categoryId } = req.body;
 
   if (!writer || !amount || !description) {
     return res.status(400).json({ message: '필수 입력 필드를 확인해주세요.' });
@@ -158,6 +188,7 @@ app.put('/update', verifyToken, async (req, res) => {
         description,
         target_date: date,
         update_date_time: new Date(),
+        category_id: categoryId,
       },
     });
 

@@ -27,6 +27,7 @@ export default function HistoryGrid({
     { field: 'date', width: 140 },
     { field: 'writer', width: 120 },
     { field: 'type', width: 100 },
+    { field: 'categoryName', width: 120 },
   ]);
 
   // 모달 상태 및 선택된 row 데이터
