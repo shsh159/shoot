@@ -44,8 +44,16 @@ const formSchema = z.object({
   amount: z.coerce.number().min(1, { message: '금액을 입력해 주세요.' }),
   description: z.string().min(1, { message: '설명을 입력해 주세요.' }),
   date: z.string().min(1, { message: '날짜를 선택해 주세요.' }),
-  categoryId: z.number().min(1, { message: '항목을 선택해 주세요.' }),
+  categoryId: z.coerce.number().min(1, { message: '항목을 선택해 주세요.' }),
 });
+
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: 180,
+    },
+  },
+};
 
 export default function HistoryAddModal({
   open,
@@ -104,7 +112,7 @@ export default function HistoryAddModal({
 
   const showAlert = useAlertStore((state) => state.showAlert);
 
-  const { data, isLoading } = useGetCategoryList();
+  const { data: categoryList, isLoading } = useGetCategoryList();
 
   const onSubmit: SubmitHandler<RowData> = async (data: RowData) => {
     const transformedData = {
@@ -159,7 +167,7 @@ export default function HistoryAddModal({
         amount: selectedData?.amount || 0,
         description: selectedData?.description || '',
         date: selectedData?.date || String(today.toDate()),
-        categoryId: selectedData?.categoryId,
+        categoryId: selectedData?.categoryId || 1,
       });
       setSeletedId(selectedData?.id || 0);
     }
@@ -199,16 +207,22 @@ export default function HistoryAddModal({
                   {...categoryId}
                   labelId="category-select-label"
                   label="항목"
-                  defaultValue={selectedData?.categoryId || data[0].id}
+                  defaultValue={selectedData?.categoryId || categoryList[0].id}
+                  MenuProps={MenuProps}
                 >
-                  {data &&
-                    data?.map((item: any, index: number) => (
+                  {categoryList &&
+                    categoryList?.map((item: any, index: number) => (
                       <MenuItem key={`category-${index}`} value={item?.id}>
                         {item.name}
                       </MenuItem>
                     ))}
                 </Select>
               </FormControl>
+              {errors.categoryId && (
+                <Typography color="error">
+                  {errors.categoryId.message}
+                </Typography>
+              )}
 
               <TextField
                 {...writer}

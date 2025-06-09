@@ -26,11 +26,17 @@ export default function CardComponent({ totalAmount }: TotalAmountProps) {
           {`${totalAmount?.currentTotal - totalAmount?.prevTotal} 원`}
         </Typography>
         <Typography variant="h5" component="div">
-          {`${Math.round(
+          {isNaN(
             ((totalAmount?.currentTotal - totalAmount?.prevTotal) /
               totalAmount?.prevTotal) *
               100,
-          )} %`}
+          )
+            ? '0 %'
+            : `${Math.round(
+                ((totalAmount?.currentTotal - totalAmount?.prevTotal) /
+                  totalAmount?.prevTotal) *
+                  100,
+              )} %`}
         </Typography>
       </CardContent>
       <CardContent>
