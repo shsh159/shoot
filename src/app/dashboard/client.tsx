@@ -55,7 +55,13 @@ export default function Client() {
 
   return (
     <>
-      <Button type="button" variant="outlined" onClick={handleClick}>
+      <Button
+        type="button"
+        variant="contained"
+        color="success"
+        onClick={handleClick}
+        sx={{ mb: 2 }}
+      >
         지출 분석
       </Button>
       <Dialog
