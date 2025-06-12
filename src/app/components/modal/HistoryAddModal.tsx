@@ -112,7 +112,7 @@ export default function HistoryAddModal({
 
   const showAlert = useAlertStore((state) => state.showAlert);
 
-  const { data: categoryList, isLoading } = useGetCategoryList();
+  const { data: categoryList, isLoading, refetch } = useGetCategoryList();
 
   const onSubmit: SubmitHandler<RowData> = async (data: RowData) => {
     const transformedData = {
@@ -174,6 +174,9 @@ export default function HistoryAddModal({
   };
 
   useEffect(() => {
+    if (!categoryList && open) {
+      refetch();
+    }
     initForm();
   }, [open, selectedData]);
 
@@ -200,24 +203,28 @@ export default function HistoryAddModal({
               {errors.type && (
                 <Typography color="error">{errors.type.message}</Typography>
               )}
+              {categoryList && (
+                <FormControl fullWidth margin="normal">
+                  <InputLabel id="category-select-label">항목</InputLabel>
+                  <Select
+                    {...categoryId}
+                    labelId="category-select-label"
+                    label="항목"
+                    defaultValue={
+                      selectedData?.categoryId || categoryList[0].id
+                    }
+                    MenuProps={MenuProps}
+                  >
+                    {categoryList &&
+                      categoryList?.map((item: any, index: number) => (
+                        <MenuItem key={`category-${index}`} value={item?.id}>
+                          {item.name}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </FormControl>
+              )}
 
-              <FormControl fullWidth margin="normal">
-                <InputLabel id="category-select-label">항목</InputLabel>
-                <Select
-                  {...categoryId}
-                  labelId="category-select-label"
-                  label="항목"
-                  defaultValue={selectedData?.categoryId || categoryList[0].id}
-                  MenuProps={MenuProps}
-                >
-                  {categoryList &&
-                    categoryList?.map((item: any, index: number) => (
-                      <MenuItem key={`category-${index}`} value={item?.id}>
-                        {item.name}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
               {errors.categoryId && (
                 <Typography color="error">
                   {errors.categoryId.message}
