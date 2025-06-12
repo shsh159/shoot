@@ -316,8 +316,18 @@ app.get('/year', verifyToken, async (req, res) => {
 });
 
 app.post('/analyze/spending', verifyToken, async (req, res) => {
-  const currentMonth = dayjs(); // 서버 기준 현재 월
-  const prevMonth = currentMonth.subtract(1, 'month');
+  const today = dayjs(); // ex) 6월 12일
+  const currentMonthStart = today.startOf('month');
+  const prevMonthSameDay = today.subtract(1, 'month');
+  const prevMonthStart = prevMonthSameDay.startOf('month');
+
+  // 예외 처리된 이전 달의 종료일
+  const prevMonthEndCandidate = prevMonthStart.date(today.date());
+  const prevMonthEnd = prevMonthEndCandidate.isAfter(
+    prevMonthStart.endOf('month'),
+  )
+    ? prevMonthStart.endOf('month')
+    : prevMonthEndCandidate;
 
   try {
     const [thisMonthData, prevMonthData] = await Promise.all([
@@ -325,8 +335,8 @@ app.post('/analyze/spending', verifyToken, async (req, res) => {
         where: {
           type: 'expense',
           target_date: {
-            gte: currentMonth.startOf('month').toISOString(),
-            lt: currentMonth.endOf('month').add(1, 'day').toISOString(),
+            gte: currentMonthStart.toISOString(),
+            lt: today.add(1, 'day').startOf('day').toISOString(), // 오늘까지
           },
         },
         include: { category: true },
@@ -335,8 +345,8 @@ app.post('/analyze/spending', verifyToken, async (req, res) => {
         where: {
           type: 'expense',
           target_date: {
-            gte: prevMonth.startOf('month').toISOString(),
-            lt: prevMonth.endOf('month').add(1, 'day').toISOString(),
+            gte: prevMonthStart.toISOString(),
+            lt: prevMonthEnd.add(1, 'day').startOf('day').toISOString(), // 이전 달의 동일 날짜 or 말일까지
           },
         },
         include: { category: true },
