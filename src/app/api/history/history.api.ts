@@ -4,7 +4,7 @@ const baseUrl = 'http://localhost:4000';
 
 export const fetchHistoryList = async () => {
   try {
-    const response = await axios.get(`${baseUrl}/list`, {
+    const response = await axios.get(`${baseUrl}/history/list`, {
       withCredentials: true,
     });
     return response.data;
@@ -23,7 +23,7 @@ export const fetchHistoryList = async () => {
 
 export const addHistory = async (historyData: any): Promise<any> => {
   try {
-    const response = await axios.post(`${baseUrl}/add`, historyData, {
+    const response = await axios.post(`${baseUrl}/history/add`, historyData, {
       withCredentials: true,
     });
     return response.data;
@@ -42,7 +42,7 @@ export const addHistory = async (historyData: any): Promise<any> => {
 
 export const modifyHistory = async (historyData: any): Promise<any> => {
   try {
-    const response = await axios.put(`${baseUrl}/update`, historyData, {
+    const response = await axios.put(`${baseUrl}/history/update`, historyData, {
       withCredentials: true,
     });
     return response.data;
@@ -61,7 +61,7 @@ export const modifyHistory = async (historyData: any): Promise<any> => {
 
 export const fetchMonthAmount = async (targetMonth: string) => {
   try {
-    const response = await axios.get(`${baseUrl}/month`, {
+    const response = await axios.get(`${baseUrl}/history/dashboard/month`, {
       params: { month: targetMonth },
       withCredentials: true,
     });
@@ -81,7 +81,7 @@ export const fetchMonthAmount = async (targetMonth: string) => {
 
 export const fetchYearAmount = async () => {
   try {
-    const response = await axios.get(`${baseUrl}/year`, {
+    const response = await axios.get(`${baseUrl}/history/dashboard/year`, {
       withCredentials: true,
     });
     return response.data;
