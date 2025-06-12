@@ -17,7 +17,7 @@ export default function YearlyChart({ amountList }: YearChart) {
       <YAxis />
       <Tooltip />
       <CartesianGrid stroke="#eee" />
-      <Line type="monotone" dataKey="amount" stroke="#82ca9d" />
+      <Line type="monotone" dataKey="amount" stroke="#ff5202" />
     </LineChart>
   );
 }
