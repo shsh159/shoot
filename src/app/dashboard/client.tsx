@@ -17,6 +17,7 @@ import {
   DialogTitle,
   Skeleton,
 } from '@mui/material';
+import { useAlertStore } from '@stores/useAlertStore';
 import { useLoadingStore } from '@stores/useLoadingStore';
 import dayjs from 'dayjs';
 import { useState } from 'react';
@@ -32,22 +33,29 @@ export default function Client() {
   const { data: yearData, isLoading: isYearLoading } = useGetHistoryYear();
   const {
     data: analyzeData,
-    isError,
     refetch,
     isLoading: isAnalyzeLoading,
   } = useGetAnalyzeSpending();
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   const handleClick = async () => {
     setLoading(true);
     try {
       const res = await refetch();
+
+      if (res.isError) {
+        const errorMessage =
+          res.error?.message || '지출 분석 중 알 수 없는 오류가 발생했습니다.';
+        showAlert('error', errorMessage);
+        return;
+      }
+
       if (res.data?.analysis) {
         setAnalysisMessage(res.data.analysis);
         setModalOpen(true);
       }
-    } catch (err) {
-      // 에러 처리 로직
-      console.error(err);
+    } catch (error) {
+      console.error('분석 예외 발생:', error);
     } finally {
       setTimeout(() => setLoading(false), 500);
     }
