@@ -21,6 +21,7 @@ import { z } from 'zod';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import {
+  useDeleteHistory,
   usePostHistoryAdd,
   usePutHistoryModify,
 } from '@api/history/history.mutation';
@@ -109,6 +110,7 @@ export default function HistoryAddModal({
 
   const { mutate: addHistory } = usePostHistoryAdd();
   const { mutate: modifyHistory } = usePutHistoryModify();
+  const { mutate: deleteHistory } = useDeleteHistory();
 
   const showAlert = useAlertStore((state) => state.showAlert);
 
@@ -157,6 +159,18 @@ export default function HistoryAddModal({
   const handleModalClose = () => {
     reset();
     handleClose();
+  };
+
+  const handleDelete = () => {
+    deleteHistory(selectId, {
+      onSuccess(data) {
+        showAlert('success', data.message);
+        handleClose();
+      },
+      onError(error) {
+        showAlert('error', error.response.data.message);
+      },
+    });
   };
 
   const initForm = () => {
@@ -280,6 +294,19 @@ export default function HistoryAddModal({
               >
                 {selectedData ? '수정하기' : '추가하기'}
               </Button>
+
+              {selectedData && (
+                <Button
+                  type="button"
+                  variant="contained"
+                  color="error"
+                  fullWidth
+                  sx={{ mt: 2 }}
+                  onClick={handleDelete}
+                >
+                  삭제하기
+                </Button>
+              )}
             </Box>
           </form>
         </Modal>

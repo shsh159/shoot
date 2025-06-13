@@ -59,6 +59,26 @@ export const modifyHistory = async (historyData: any): Promise<any> => {
   }
 };
 
+export const deleteHistory = async (historyId: number): Promise<any> => {
+  try {
+    const response = await axios.delete(`${baseUrl}/history/delete`, {
+      params: { historyId },
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const errorMessage =
+        error.response?.data?.message || 'Unknown server error';
+      console.error('서버 에러 메시지:', errorMessage);
+      throw new Error(errorMessage);
+    } else {
+      console.error('Unexpected error:', error);
+      throw new Error('Unexpected error occurred');
+    }
+  }
+};
+
 export const fetchMonthAmount = async (targetMonth: string) => {
   try {
     const response = await axios.get(`${baseUrl}/history/dashboard/month`, {

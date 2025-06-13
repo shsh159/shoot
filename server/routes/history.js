@@ -92,6 +92,30 @@ router.put('/update', verifyToken, async (req, res) => {
   }
 });
 
+router.delete('/delete', verifyToken, async (req, res) => {
+  const { historyId } = req.query;
+
+  if (!historyId) {
+    return res.status(400).json({ message: '필수 입력 필드를 확인해주세요.' });
+  }
+
+  try {
+    const targetHistory = await prisma.history.findUnique({
+      where: { id: Number(historyId) },
+    });
+    if (!targetHistory) {
+      return res.status(404).json({ message: '삭제 가능한 내역이 없습니다.' });
+    }
+    await prisma.history.delete({
+      where: { id: Number(historyId) },
+    });
+    return res.status(200).json({ message: '삭제가 완료되었습니다.' });
+  } catch (err) {
+    console.log('Delete error', err);
+    res.status(500).json({ message: '삭제 중 에러가 발생하였습니다.' });
+  }
+});
+
 router.get('/dashboard/month', verifyToken, async (req, res) => {
   const { month } = req.query; // 예: 2025-05
 
