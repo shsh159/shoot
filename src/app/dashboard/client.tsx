@@ -55,7 +55,7 @@ export default function Client() {
         setModalOpen(true);
       }
     } catch (error) {
-      console.error('분석 예외 발생:', error);
+      console.error('분석 에러 발생:', error);
     } finally {
       setTimeout(() => setLoading(false), 500);
     }
@@ -89,7 +89,7 @@ export default function Client() {
       <Box
         display="flex"
         gap={2}
-        sx={{ height: '340px', marginBottom: '20px' }}
+        sx={{ height: '340px', marginBottom: '40px' }}
       >
         <Box sx={{ width: '70%' }}>
           {monthData?.amountList ? (
@@ -118,7 +118,7 @@ export default function Client() {
       </Box>
 
       {!isYearLoading ? (
-        <Box sx={{ height: '340px' }}>
+        <Box sx={{ height: '340px', mt: 2 }}>
           <YearlyChart amountList={yearData?.amountList ?? []} />
         </Box>
       ) : (

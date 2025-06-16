@@ -12,7 +12,7 @@ import {
 
 export default function YearlyChart({ amountList }: YearChart) {
   return (
-    <LineChart width={1250} height={380} data={amountList}>
+    <LineChart width={1250} height={340} data={amountList}>
       <XAxis dataKey="month" />
       <YAxis />
       <Tooltip />
