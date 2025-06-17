@@ -22,7 +22,7 @@ export default function HistoryGrid({
   // Column Definitions
   const [colDefs] = useState<ColDef<RowData>[]>([
     { field: 'no', width: 70, headerName: '순서' },
-    { field: 'description', flex: 1, headerName: '설명' },
+    { field: 'description', flex: 1, headerName: '설명', filter: true },
     { field: 'amount', width: 120, headerName: '금액' },
     { field: 'date', width: 140, headerName: '날짜' },
     { field: 'writer', width: 120, headerName: '이름' },
@@ -54,6 +54,7 @@ export default function HistoryGrid({
         rowData={rowData}
         columnDefs={colDefs}
         onCellClicked={handleCellClick} // 셀 클릭 이벤트 추가
+        pagination={true}
       />
 
       {/* 입금 모달 */}
