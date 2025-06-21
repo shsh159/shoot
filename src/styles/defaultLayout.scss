@@ -1,0 +1,74 @@
+@use './scss/mixins' as *; // as *는 mixin 이름만으로 사용 가능하게 함
+
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.header {
+  z-index: 1201;
+}
+
+.content-wrapper {
+  display: flex;
+  flex: 1;
+  margin-top: 64px;
+
+  @include mobile {
+    flex-direction: column;
+  }
+}
+
+.desktop-drawer .MuiDrawer-paper {
+  width: 240px;
+  box-sizing: border-box;
+  margin-top: 84px;
+  text-align: center;
+
+  @include mobile {
+    display: none;
+  }
+}
+
+.mobile-drawer .MuiDrawer-paper {
+  width: 240px;
+
+  @include tablet {
+    margin-top: 64px;
+  }
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 24px;
+  margin-left: 240px;
+  overflow: auto;
+
+  @include mobile {
+    margin-left: 0;
+    padding: 16px;
+  }
+}
+
+.footer {
+  padding: 16px;
+  text-align: center;
+  background-color: #eeeeee;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+
+  @include mobile {
+    font-size: 14px;
+  }
+}
+
+.link {
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    text-decoration: none;
+  }
+}

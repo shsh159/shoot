@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import './defaultLayout.scss';
+import '@styles/defaultLayout.scss';
 import Link from 'next/link';
 
 export default function DefaultLayout({
