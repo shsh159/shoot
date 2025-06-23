@@ -5,9 +5,12 @@ import {
   Box,
   CssBaseline,
   Drawer,
+  IconButton,
   Toolbar,
   Typography,
 } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 import { useState } from 'react';
 import '@styles/defaultLayout.scss';
 import Link from 'next/link';
@@ -25,6 +28,14 @@ export default function DefaultLayout({
 
   const drawer = (
     <Box className="drawer-content">
+      <Box className="drawer-close-btn">
+        <IconButton
+          sx={{ display: { md: 'none' } }}
+          onClick={handleDrawerToggle}
+        >
+          <CloseIcon />
+        </IconButton>
+      </Box>
       <Link href={'/dashboard'} className="link">
         <Typography variant="h6">대시보드</Typography>
       </Link>
@@ -41,6 +52,15 @@ export default function DefaultLayout({
       {/* 헤더 */}
       <AppBar position="fixed" className="header">
         <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { md: 'none' } }} // md 이하에서만 보임
+          >
+            <MenuIcon />
+          </IconButton>
           <Typography variant="h6" noWrap>
             가계부 앱
           </Typography>

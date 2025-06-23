@@ -1,4 +1,4 @@
-@use './scss/mixins' as *; // as *는 mixin 이름만으로 사용 가능하게 함
+@use './scss/mixins' as *;
 
 .layout-container {
   display: flex;
@@ -15,8 +15,23 @@
   flex: 1;
   margin-top: 64px;
 
-  @include mobile {
+  @include only-mobile {
     flex-direction: column;
+  }
+}
+
+.drawer-content {
+  position: relative; // 닫기 버튼 위치 기준
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  gap: 20px;
+
+  .drawer-close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 1;
   }
 }
 
@@ -26,7 +41,11 @@
   margin-top: 84px;
   text-align: center;
 
-  @include mobile {
+  @include only-mobile {
+    display: none;
+  }
+
+  @include only-tablet {
     display: none;
   }
 }
@@ -34,18 +53,21 @@
 .mobile-drawer .MuiDrawer-paper {
   width: 240px;
 
-  @include tablet {
-    margin-top: 64px;
+  @include desktop {
+    display: none;
   }
 }
 
 .main-content {
   flex-grow: 1;
   padding: 24px;
-  margin-left: 240px;
   overflow: auto;
 
-  @include mobile {
+  @include desktop {
+    margin-left: 240px;
+  }
+
+  @include only-mobile {
     margin-left: 0;
     padding: 16px;
   }
@@ -59,7 +81,7 @@
   bottom: 0;
   width: 100%;
 
-  @include mobile {
+  @include only-mobile {
     font-size: 14px;
   }
 }
