@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 // Theme
 import type { ColDef, CellClickedEvent } from 'ag-grid-community';
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
@@ -8,6 +8,7 @@ import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import HistoryAddModal from '../modal/HistoryAddModal';
 import { RowData } from '@lib/types/history';
+import { useMediaQuery } from '@mui/material';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -16,19 +17,34 @@ export default function HistoryGrid({
 }: {
   historyList: RowData[];
 }) {
-  // Row Data
+  const isMobile = useMediaQuery('(max-width:768px)');
   const [rowData, setRowData] = useState<RowData[]>(historyList);
 
-  // Column Definitions
-  const [colDefs] = useState<ColDef<RowData>[]>([
-    { field: 'no', width: 70, headerName: '순서' },
-    { field: 'description', flex: 1, headerName: '설명', filter: true },
-    { field: 'amount', width: 120, headerName: '금액' },
-    { field: 'date', width: 140, headerName: '날짜' },
-    { field: 'writer', width: 120, headerName: '이름' },
-    { field: 'type', width: 100, headerName: '지출/수입' },
-    { field: 'categoryName', width: 120, headerName: '항목' },
-  ]);
+  // 모바일의 경우 grid 간소화를 위해 일부 컬럼만 렌더링
+  const colDefs = useMemo<ColDef<RowData>[]>(() => {
+    const baseCols: ColDef<RowData>[] = [
+      { field: 'no', headerName: '순서', flex: 0.5 },
+      {
+        field: 'description',
+        headerName: '설명',
+        flex: 2,
+        filter: true,
+        cellStyle: { textAlign: 'center' },
+      },
+      { field: 'amount', headerName: '금액', flex: 1 },
+      { field: 'date', headerName: '날짜', flex: 1.5 },
+      { field: 'writer', headerName: '이름', flex: 1 },
+      { field: 'type', headerName: '지출/수입', flex: 1 },
+      { field: 'categoryName', headerName: '항목', flex: 1 },
+    ];
+
+    return isMobile
+      ? baseCols.filter(
+          (col) =>
+            !['no', 'writer', 'type', 'categoryName'].includes(col.field!),
+        )
+      : baseCols;
+  }, [isMobile]);
 
   // 모달 상태 및 선택된 row 데이터
   const [modalOpen, setModalOpen] = useState(false);
@@ -54,7 +70,7 @@ export default function HistoryGrid({
         rowData={rowData}
         columnDefs={colDefs}
         onCellClicked={handleCellClick} // 셀 클릭 이벤트 추가
-        pagination={true}
+        pagination={isMobile ? false : true}
       />
 
       {/* 입금 모달 */}

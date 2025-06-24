@@ -6,8 +6,8 @@ export type RowData = {
   description: string;
   amount: number;
   date: string;
-  writer: string;
-  type: AddType;
+  writer?: string;
+  type?: AddType;
   categoryId: number;
   categoryName?: string;
 };
