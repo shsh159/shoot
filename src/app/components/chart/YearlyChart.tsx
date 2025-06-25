@@ -10,9 +10,18 @@ import {
   CartesianGrid,
 } from 'recharts';
 
-export default function YearlyChart({ amountList }: YearChart) {
+type YearlyChartProps = YearChart & { isMobile?: boolean };
+
+export default function YearlyChart({
+  amountList,
+  isMobile,
+}: YearlyChartProps) {
   return (
-    <LineChart width={1250} height={340} data={amountList}>
+    <LineChart
+      width={isMobile ? 340 : 1250}
+      height={isMobile ? 240 : 340}
+      data={amountList}
+    >
       <XAxis dataKey="month" />
       <YAxis />
       <Tooltip />

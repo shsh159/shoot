@@ -16,6 +16,8 @@ import {
   DialogContent,
   DialogTitle,
   Skeleton,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import { useAlertStore } from '@stores/useAlertStore';
 import { useLoadingStore } from '@stores/useLoadingStore';
@@ -37,6 +39,10 @@ export default function Client() {
     isLoading: isAnalyzeLoading,
   } = useGetAnalyzeSpending();
   const showAlert = useAlertStore((state) => state.showAlert);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
 
   const handleClick = async () => {
     setLoading(true);
@@ -88,22 +94,27 @@ export default function Client() {
       </Dialog>
       <Box
         display="flex"
+        flexDirection={isMobile || isTablet ? 'column' : 'row'}
+        flexWrap="wrap"
         gap={2}
-        sx={{ height: '340px', marginBottom: '40px' }}
+        sx={{ marginBottom: '40px' }}
       >
-        <Box sx={{ width: '70%' }}>
+        <Box sx={{ width: isMobile ? '100%' : isTablet ? '70%' : '80%' }}>
           {monthData?.amountList ? (
-            <MonthlyChart amountList={monthData.amountList} />
+            <MonthlyChart
+              amountList={monthData.amountList}
+              isMobile={isMobile}
+            />
           ) : (
             <Skeleton
               variant="rounded"
               animation="wave"
               width="100%"
-              height="100%"
+              height={isMobile ? 280 : 340}
             />
           )}
         </Box>
-        <Box sx={{ width: '20%' }}>
+        <Box sx={{ width: isMobile ? '100%' : '20%' }}>
           {monthData?.totalAmount ? (
             <CardComponent totalAmount={monthData.totalAmount} />
           ) : (
@@ -111,26 +122,27 @@ export default function Client() {
               variant="rounded"
               animation="wave"
               width="100%"
-              height="100%"
+              height={isMobile ? 160 : 340}
             />
           )}
         </Box>
       </Box>
 
-      {!isYearLoading ? (
-        <Box sx={{ height: '340px', mt: 2 }}>
-          <YearlyChart amountList={yearData?.amountList ?? []} />
-        </Box>
-      ) : (
-        <Box sx={{ height: '340px' }}>
+      <Box sx={{ height: isMobile ? 280 : 340, mt: 2 }}>
+        {!isYearLoading ? (
+          <YearlyChart
+            amountList={yearData?.amountList ?? []}
+            isMobile={isMobile}
+          />
+        ) : (
           <Skeleton
             variant="rounded"
             animation="wave"
             width="100%"
             height="100%"
           />
-        </Box>
-      )}
+        )}
+      </Box>
     </>
   );
 }

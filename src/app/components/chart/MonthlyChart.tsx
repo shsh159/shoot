@@ -11,11 +11,20 @@ import {
   Legend,
 } from 'recharts';
 
-type MonthlyChartProps = Pick<MonthChart, 'amountList'>;
+type MonthlyChartProps = Pick<MonthChart, 'amountList'> & {
+  isMobile?: boolean;
+};
 
-export default function MonthlyChart({ amountList }: MonthlyChartProps) {
+export default function MonthlyChart({
+  amountList,
+  isMobile,
+}: MonthlyChartProps) {
   return (
-    <LineChart width={950} height={380} data={amountList}>
+    <LineChart
+      width={isMobile ? 320 : 950}
+      height={isMobile ? 240 : 380}
+      data={amountList}
+    >
       <XAxis dataKey="date" />
       <YAxis />
       <Legend />
