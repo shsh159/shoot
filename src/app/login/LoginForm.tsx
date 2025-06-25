@@ -51,7 +51,7 @@ export default function LoginPage() {
       },
       onError: (error) => {
         setTimeout(() => setLoading(false), 500);
-        showAlert('error', error.response.data.message);
+        showAlert('error', error.message);
       },
     });
   };
