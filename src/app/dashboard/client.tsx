@@ -99,7 +99,11 @@ export default function Client() {
         gap={2}
         sx={{ marginBottom: '40px' }}
       >
-        <Box sx={{ width: isMobile ? '100%' : isTablet ? '70%' : '80%' }}>
+        <Box
+          sx={{
+            width: isMobile ? '100%' : isTablet ? '70%' : 'calc(80% - 8px)',
+          }}
+        >
           {monthData?.amountList ? (
             <MonthlyChart
               amountList={monthData.amountList}
@@ -114,7 +118,7 @@ export default function Client() {
             />
           )}
         </Box>
-        <Box sx={{ width: isMobile ? '100%' : '20%' }}>
+        <Box sx={{ width: isMobile ? '100%' : 'calc(20% - 8px)' }}>
           {monthData?.totalAmount ? (
             <CardComponent totalAmount={monthData.totalAmount} />
           ) : (
