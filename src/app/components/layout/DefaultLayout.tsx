@@ -57,7 +57,7 @@ export default function DefaultLayout({
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { md: 'none' } }} // md 이하에서만 보임
+            sx={{ mr: 2, display: { md: 'block' } }}
           >
             <MenuIcon />
           </IconButton>

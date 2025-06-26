@@ -52,6 +52,7 @@
 
 .mobile-drawer .MuiDrawer-paper {
   width: 240px;
+  display: block;
 
   @include desktop {
     display: none;

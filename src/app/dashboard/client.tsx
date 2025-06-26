@@ -11,6 +11,7 @@ import YearlyChart from '@components/chart/YearlyChart';
 import {
   Box,
   Button,
+  createTheme,
   Dialog,
   DialogActions,
   DialogContent,
@@ -40,7 +41,17 @@ export default function Client() {
   } = useGetAnalyzeSpending();
   const showAlert = useAlertStore((state) => state.showAlert);
 
-  const theme = useTheme();
+  const theme = createTheme({
+    breakpoints: {
+      values: {
+        xs: 0,
+        sm: 769, // 모바일 끝
+        md: 1025, // 태블릿 끝
+        lg: 1280,
+        xl: 1536,
+      },
+    },
+  });
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
 
