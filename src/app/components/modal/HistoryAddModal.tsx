@@ -48,6 +48,8 @@ const formSchema = z.object({
   categoryId: z.coerce.number().min(1, { message: '항목을 선택해 주세요.' }),
 });
 
+type FormData = z.infer<typeof formSchema>;
+
 const MenuProps = {
   PaperProps: {
     style: {
@@ -67,7 +69,7 @@ export default function HistoryAddModal({
     setValue,
     formState: { errors },
     reset,
-  } = useForm<RowData>({
+  } = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
   const [selectId, setSeletedId] = useState<number>(selectedData?.id || 0);
@@ -116,7 +118,7 @@ export default function HistoryAddModal({
 
   const { data: categoryList, isLoading, refetch } = useGetCategoryList();
 
-  const onSubmit: SubmitHandler<RowData> = async (data: RowData) => {
+  const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
     const transformedData = {
       id: selectId,
       writer: data.writer,
