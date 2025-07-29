@@ -1,13 +1,13 @@
 import axios from 'axios';
 
-const baseUrl = 'http://localhost:4000';
+const baseUrl = process.env.API_BASE_URL;
 
 export const loginUser = async (loginData: {
   userId: string;
   userPassword: string;
 }) => {
   try {
-    const response = await axios.post(`${baseUrl}/auth/login`, loginData, {
+    const response = await axios.post(`${baseUrl}/member/login`, loginData, {
       withCredentials: true,
     });
     return response.data;
