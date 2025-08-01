@@ -46,7 +46,6 @@ export default function LoginPage() {
     setLoading(true);
     mutate(data, {
       onSuccess: () => {
-        console.log('????');
         router.push('/list');
         setTimeout(() => setLoading(false), 500);
       },
